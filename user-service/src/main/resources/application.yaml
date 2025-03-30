@@ -1,0 +1,21 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: user-service
+
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        ddl-auto: validate
+
+  datasource:
+    url: jdbc:postgresql://localhost:5434/rental_user_service
+    username: postgres
+    password: postgres
+
+  flyway:
+    enabled: true
