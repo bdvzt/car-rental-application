@@ -5,6 +5,11 @@ spring:
   application:
     name: user-service
 
+  jwt:
+    secret: b9CkL2vD7pYhRwT8MfQzNsXpAeVtUcGjQzKlBnTyOp90=
+    lifetime: 15m
+    refreshExpiration: 7d
+
   jpa:
     show-sql: true
     properties:

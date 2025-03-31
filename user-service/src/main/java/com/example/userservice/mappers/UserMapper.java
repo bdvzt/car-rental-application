@@ -2,37 +2,45 @@ package com.example.userservice.mappers;
 
 import com.example.userservice.dtos.requests.RegisterUserRequest;
 import com.example.userservice.dtos.responses.UserProfileResponse;
+import com.example.userservice.entities.Role;
 import com.example.userservice.entities.User;
-import com.example.common.enums.Role;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public class UserMapper {
 
-    public static User mapRegisterRequestToUser(RegisterUserRequest request) {
+    public static User mapRegisterRequestToUser(RegisterUserRequest request, Set<Role> roles, PasswordEncoder encoder) {
         User user = new User();
         user.setId(UUID.randomUUID());
         user.setName(request.getName());
         user.setSurname(request.getSurname());
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
-        user.setRole(Role.USER);
+        user.setPassword(encoder.encode(request.getPassword()));
         user.setActive(true);
         user.setRegistrationDate(LocalDateTime.now());
+        user.setRoles(roles);
         return user;
     }
 
     public static UserProfileResponse mapUserToResponse(User user) {
-        UserProfileResponse response = new UserProfileResponse();
-        response.setId(user.getId());
-        response.setName(user.getName());
-        response.setSurname(user.getSurname());
-        response.setEmail(user.getEmail());
-        response.setRole(user.getRole());
-        response.setRegistrationDate(user.getRegistrationDate());
-        return response;
+        Set<String> roleNames = user.getRoles().stream()
+                .map(role -> role.getName().name())
+                .collect(Collectors.toSet());
+
+        return new UserProfileResponse(
+                user.getId(),
+                user.getName(),
+                user.getSurname(),
+                user.getEmail(),
+                roleNames,
+                user.getRegistrationDate()
+        );
     }
 }
+

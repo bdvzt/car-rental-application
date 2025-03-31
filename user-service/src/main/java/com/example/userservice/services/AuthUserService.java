@@ -2,38 +2,62 @@ package com.example.userservice.services;
 
 import com.example.userservice.dtos.requests.LoginUserRequest;
 import com.example.userservice.dtos.requests.RegisterUserRequest;
-import com.example.userservice.dtos.responses.UserProfileResponse;
+import com.example.userservice.dtos.responses.MessageResponse;
+import com.example.userservice.dtos.responses.TokenResponse;
+import com.example.userservice.entities.ERole;
+import com.example.userservice.entities.Role;
 import com.example.userservice.entities.User;
 import com.example.userservice.mappers.UserMapper;
+import com.example.userservice.repositories.RoleRepository;
 import com.example.userservice.repositories.UserRepository;
+import com.example.userservice.security.jwt.services.JwtUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class AuthUserService {
 
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserProfileResponse register(RegisterUserRequest request) {
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("Пользователь с таким email уже существует");
-        }
+    public TokenResponse login(LoginUserRequest request) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
 
-        User user = UserMapper.mapRegisterRequestToUser(request);
-        userRepository.save(user);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
 
-        return UserMapper.mapUserToResponse(user);
+        return new TokenResponse(jwt);
     }
 
-    public UserProfileResponse login(LoginUserRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Неверный email или пароль"));
-
-        if (!user.getPassword().equals(request.getPassword())) {
-            throw new IllegalArgumentException("Неверный email или пароль");
+    public MessageResponse register(RegisterUserRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("Email уже занят");
         }
 
-        return UserMapper.mapUserToResponse(user);
+        Role defaultRole = roleRepository.findByName(ERole.ROLE_USER)
+                .orElseThrow(() -> new RuntimeException("Роль не найдена"));
+
+        Set<Role> roles = Set.of(defaultRole);
+
+        User user = UserMapper.mapRegisterRequestToUser(request, roles, passwordEncoder);
+        userRepository.save(user);
+
+        return new MessageResponse("Пользователь успешно зарегистрирован");
     }
 }

@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,12 +20,17 @@ public class ProfileUserService {
     public UserProfileResponse getProfileByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("Пользователь не найден"));
+
+        Set<String> roleNames = user.getRoles().stream()
+                .map(role -> role.getName().name())
+                .collect(Collectors.toSet());
+
         return new UserProfileResponse(
                 user.getId(),
                 user.getName(),
                 user.getSurname(),
                 user.getEmail(),
-                user.getRole(),
+                roleNames,
                 user.getRegistrationDate()
         );
     }
@@ -50,12 +57,16 @@ public class ProfileUserService {
 
         userRepository.save(user);
 
+        Set<String> roleNames = user.getRoles().stream()
+                .map(role -> role.getName().name())
+                .collect(Collectors.toSet());
+
         return new UserProfileResponse(
                 user.getId(),
                 user.getName(),
                 user.getSurname(),
                 user.getEmail(),
-                user.getRole(),
+                roleNames,
                 user.getRegistrationDate()
         );
     }

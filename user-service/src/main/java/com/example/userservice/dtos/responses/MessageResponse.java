@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-public class TokenResponse {
-    private String token;
+public class MessageResponse {
+    private String message;
 }

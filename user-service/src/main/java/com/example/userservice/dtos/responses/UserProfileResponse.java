@@ -1,11 +1,11 @@
 package com.example.userservice.dtos.responses;
 
-import com.example.common.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -16,6 +16,6 @@ public class UserProfileResponse {
     private String name;
     private String surname;
     private String email;
-    private Role role;
+    private Set<String> roles;
     private LocalDateTime registrationDate;
 }

@@ -17,7 +17,7 @@ public class RegisterUserRequest {
     private String surname;
 
     @NotBlank(message = "Email обязателен")
-    @Email(message = "Невалидный email")
+    @Email(message = "Email адрес должен быть в формате user@example.com")
     @Size(min = 5, max = 255)
     private String email;
 

@@ -1,13 +1,12 @@
 package com.example.userservice.entities;
 
 import jakarta.persistence.*;
-import com.example.common.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.*;
 
 @Data
 @Entity
@@ -18,13 +17,6 @@ public class User {
 
     @Id
     private UUID id;
-
-    @Column(name = "user_role", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
-    @Column(nullable = false)
-    private boolean isActive;
 
     @Column(name = "user_name")
     private String name;
@@ -39,5 +31,16 @@ public class User {
     private String password;
 
     @Column(nullable = false)
+    private boolean isActive;
+
+    @Column(nullable = false)
     private LocalDateTime registrationDate = LocalDateTime.now();
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 }
