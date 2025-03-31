@@ -1,9 +1,9 @@
 package com.example.userservice.controllers;
 
-import com.example.userservice.dtos.requests.UserLoginRequest;
-import com.example.userservice.dtos.requests.UserRegisterRequest;
-import com.example.userservice.dtos.responses.UserResponse;
-import com.example.userservice.services.UserService;
+import com.example.userservice.dtos.requests.LoginUserRequest;
+import com.example.userservice.dtos.requests.RegisterUserRequest;
+import com.example.userservice.dtos.responses.UserProfileResponse;
+import com.example.userservice.services.AuthUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,19 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthUserController {
 
-    private final UserService userService;
+    private final AuthUserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> register(@Valid @RequestBody UserRegisterRequest request) {
-        UserResponse response = userService.register(request);
+    public ResponseEntity<UserProfileResponse> register(@Valid @RequestBody RegisterUserRequest request) {
+        UserProfileResponse response = userService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserResponse> login(@Valid @RequestBody UserLoginRequest request) {
-        UserResponse response = userService.login(request);
+    public ResponseEntity<UserProfileResponse> login(@Valid @RequestBody LoginUserRequest request) {
+        UserProfileResponse response = userService.login(request);
         return ResponseEntity.ok(response);
     }
 }

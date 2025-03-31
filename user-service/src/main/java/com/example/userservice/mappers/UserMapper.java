@@ -1,7 +1,7 @@
 package com.example.userservice.mappers;
 
-import com.example.userservice.dtos.requests.UserRegisterRequest;
-import com.example.userservice.dtos.responses.UserResponse;
+import com.example.userservice.dtos.requests.RegisterUserRequest;
+import com.example.userservice.dtos.responses.UserProfileResponse;
 import com.example.userservice.entities.User;
 import com.example.common.enums.Role;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import java.util.UUID;
 @Component
 public class UserMapper {
 
-    public static User mapRegisterRequestToUser(UserRegisterRequest request) {
+    public static User mapRegisterRequestToUser(RegisterUserRequest request) {
         User user = new User();
         user.setId(UUID.randomUUID());
         user.setName(request.getName());
@@ -25,8 +25,8 @@ public class UserMapper {
         return user;
     }
 
-    public static UserResponse mapUserToResponse(User user) {
-        UserResponse response = new UserResponse();
+    public static UserProfileResponse mapUserToResponse(User user) {
+        UserProfileResponse response = new UserProfileResponse();
         response.setId(user.getId());
         response.setName(user.getName());
         response.setSurname(user.getSurname());
