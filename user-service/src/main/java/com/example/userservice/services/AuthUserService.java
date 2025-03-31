@@ -47,7 +47,7 @@ public class AuthUserService {
 
     public MessageResponse register(RegisterUserRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email уже занят");
+            throw new IllegalArgumentException("Такой email уже существует");
         }
 
         Role defaultRole = roleRepository.findByName(ERole.ROLE_USER)

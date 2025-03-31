@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/profile")
 @RequiredArgsConstructor
-public class ProfileUserController {
+public class ProfileUserController { //TODO: - сделать нормально через токен
 
     private final ProfileUserService profileUserService;
 
