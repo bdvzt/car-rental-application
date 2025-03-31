@@ -1,6 +1,7 @@
 package com.example.userservice.entities;
 
 import jakarta.persistence.*;
+import com.example.common.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -19,6 +20,13 @@ import java.util.UUID;
 public class User {
     @Id
     private UUID id;
+
+    @Column(name = "user_role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Column(nullable = false)
+    private boolean isActive;
 
     @Size(min = 1, max = 50, message = "Имя должно содержать от 1 до 50 символов.")
     @NotBlank(message = "Поле имя не должно быть пустым.")
