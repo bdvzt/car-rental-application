@@ -2,29 +2,39 @@ package com.example.userservice.controllers;
 
 import com.example.userservice.dtos.requests.UpdateUserProfileRequest;
 import com.example.userservice.dtos.responses.UserProfileResponse;
+import com.example.userservice.security.services.UserDetailsImpl;
 import com.example.userservice.services.ProfileUserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/profile")
 @RequiredArgsConstructor
-public class ProfileUserController { //TODO: - сделать нормально через токен
+@SecurityRequirement(name = "bearerAuth")
+public class ProfileUserController {
 
     private final ProfileUserService profileUserService;
 
-    @GetMapping("/{email}")
-    public ResponseEntity<UserProfileResponse> getProfile(@PathVariable String email) {
-        return ResponseEntity.ok(profileUserService.getProfileByEmail(email));
+    @GetMapping
+    public ResponseEntity<UserProfileResponse> getProfile(Authentication authentication) {
+        return ResponseEntity.ok(profileUserService.getProfile(authentication));
     }
 
-    @PatchMapping("/{email}")
+    @PatchMapping
     public ResponseEntity<UserProfileResponse> updateProfile(
-            @PathVariable String email,
+            Authentication authentication,
             @Valid @RequestBody UpdateUserProfileRequest request
     ) {
-        return ResponseEntity.ok(profileUserService.updateProfile(email, request));
+        return ResponseEntity.ok(profileUserService.updateProfile(authentication, request));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deactivateProfile(Authentication authentication) {
+        profileUserService.deactivateProfile(authentication);
+        return ResponseEntity.noContent().build(); // HTTP 204
     }
 }

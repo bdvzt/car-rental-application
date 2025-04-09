@@ -3,8 +3,12 @@ package com.example.userservice.services;
 import com.example.userservice.dtos.requests.UpdateUserProfileRequest;
 import com.example.userservice.dtos.responses.UserProfileResponse;
 import com.example.userservice.entities.User;
+import com.example.userservice.mappers.UserMapper;
 import com.example.userservice.repositories.UserRepository;
+import com.example.userservice.security.services.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -16,58 +20,38 @@ import java.util.stream.Collectors;
 public class ProfileUserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserProfileResponse getProfileByEmail(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NoSuchElementException("Пользователь не найден"));
-
-        Set<String> roleNames = user.getRoles().stream()
-                .map(role -> role.getName().name())
-                .collect(Collectors.toSet());
-
-        return new UserProfileResponse(
-                user.getId(),
-                user.getName(),
-                user.getSurname(),
-                user.getEmail(),
-                roleNames,
-                user.getRegistrationDate()
-        );
+    public UserProfileResponse getProfile(Authentication authentication) {
+        String email = extractEmail(authentication);
+        User user = getUserByEmail(email);
+        return UserMapper.mapUserToResponse(user);
     }
 
-    public UserProfileResponse updateProfile(String email, UpdateUserProfileRequest request) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NoSuchElementException("Пользователь не найден"));
+    public UserProfileResponse updateProfile(Authentication authentication, UpdateUserProfileRequest request) {
+        String email = extractEmail(authentication);
+        User user = getUserByEmail(email);
 
-        if (request.getName() != null && !request.getName().isBlank()) {
-            user.setName(request.getName());
-        }
-
-        if (request.getSurname() != null && !request.getSurname().isBlank()) {
-            user.setSurname(request.getSurname());
-        }
-
-        if (request.getEmail() != null && !request.getEmail().isBlank()) {
-            user.setEmail(request.getEmail());
-        }
-
-        if (request.getPassword() != null && !request.getPassword().isBlank()) {
-            user.setPassword(request.getPassword());
-        }
-
+        UserMapper.mapUpdateRequestToUser(user, request, passwordEncoder);
         userRepository.save(user);
 
-        Set<String> roleNames = user.getRoles().stream()
-                .map(role -> role.getName().name())
-                .collect(Collectors.toSet());
+        return UserMapper.mapUserToResponse(user);
+    }
 
-        return new UserProfileResponse(
-                user.getId(),
-                user.getName(),
-                user.getSurname(),
-                user.getEmail(),
-                roleNames,
-                user.getRegistrationDate()
-        );
+    public void deactivateProfile(Authentication authentication) {
+        String email = extractEmail(authentication);
+        User user = getUserByEmail(email);
+        user.setActive(false);
+        userRepository.save(user);
+    }
+
+    private User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("Пользователь не найден"));
+    }
+
+    private String extractEmail(Authentication authentication) {
+        return ((UserDetailsImpl) authentication.getPrincipal()).getUsername();
     }
 }
+

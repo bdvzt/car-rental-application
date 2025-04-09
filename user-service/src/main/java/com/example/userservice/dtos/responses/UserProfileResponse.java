@@ -18,4 +18,5 @@ public class UserProfileResponse {
     private String email;
     private Set<String> roles;
     private LocalDateTime registrationDate;
+    private boolean isActive;
 }

@@ -1,6 +1,7 @@
 package com.example.userservice.mappers;
 
 import com.example.userservice.dtos.requests.RegisterUserRequest;
+import com.example.userservice.dtos.requests.UpdateUserProfileRequest;
 import com.example.userservice.dtos.responses.UserProfileResponse;
 import com.example.userservice.entities.Role;
 import com.example.userservice.entities.User;
@@ -39,8 +40,27 @@ public class UserMapper {
                 user.getSurname(),
                 user.getEmail(),
                 roleNames,
-                user.getRegistrationDate()
+                user.getRegistrationDate(),
+                user.isActive()
         );
+    }
+
+    public static void mapUpdateRequestToUser(User user, UpdateUserProfileRequest request, PasswordEncoder encoder) {
+        if (request.getName() != null && !request.getName().isBlank()) {
+            user.setName(request.getName());
+        }
+
+        if (request.getSurname() != null && !request.getSurname().isBlank()) {
+            user.setSurname(request.getSurname());
+        }
+
+        if (request.getEmail() != null && !request.getEmail().isBlank()) {
+            user.setEmail(request.getEmail());
+        }
+
+        if (request.getPassword() != null && !request.getPassword().isBlank()) {
+            user.setPassword(encoder.encode(request.getPassword()));
+        }
     }
 }
 

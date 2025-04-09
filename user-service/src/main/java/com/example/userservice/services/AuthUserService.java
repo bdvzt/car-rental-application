@@ -51,7 +51,7 @@ public class AuthUserService {
 
         return new TokenResponse(accessToken, refreshToken.getToken());
     }
-
+// TODO: позволить админу зарегаться как юзеру
     public MessageResponse register(RegisterUserRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Такой email уже существует");
