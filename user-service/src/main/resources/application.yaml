@@ -5,10 +5,15 @@ spring:
   application:
     name: user-service
 
+  springdoc:
+    swagger-ui:
+      enabled: true
+      path: /swagger-ui.html
+
   jwt:
     secret: b9CkL2vD7pYhRwT8MfQzNsXpAeVtUcGjQzKlBnTyOp90=
-    lifetime: 15m
-    refreshExpiration: 7d
+    lifetimeMinutes: 15
+    refreshExpirationDays: 7
 
   jpa:
     show-sql: true

@@ -9,6 +9,6 @@ import org.springframework.stereotype.Component;
 @Data
 public class JwtProperties {
     private String secret;
-    private String lifetime;
-    private String refreshExpiration;
+    private int lifetimeMinutes;
+    private int refreshExpirationDays;
 }

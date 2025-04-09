@@ -1,16 +1,21 @@
 package com.example.userservice.services;
 
+import com.example.userservice.dtos.responses.TokenRefreshResponse;
 import com.example.userservice.entities.RefreshToken;
+import com.example.userservice.entities.User;
 import com.example.userservice.exeptions.TokenRefreshException;
 import com.example.userservice.repositories.RefreshTokenRepository;
 import com.example.userservice.repositories.UserRepository;
 import com.example.userservice.security.jwt.services.JwtProperties;
+import com.example.userservice.security.jwt.services.JwtUtils;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,19 +27,26 @@ public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
 
+    private final JwtUtils jwtUtils;
+
     public Optional<RefreshToken> findByToken(String token) {
         return refreshTokenRepository.findByToken(token);
     }
 
+    @Transactional
     public RefreshToken createRefreshToken(UUID userId) {
+        refreshTokenRepository.deleteByUserId(userId);
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        String token = UUID.randomUUID().toString();
+        Instant expiryDate = Instant.now().plus(jwtProperties.getRefreshExpirationDays(), ChronoUnit.DAYS);
+
         RefreshToken refreshToken = new RefreshToken();
-
-        refreshToken.setUser(userRepository.findById(userId).orElseThrow(() ->
-                new IllegalArgumentException("Пользователь с ID " + userId + " не найден")));
-
-        long refreshTokenDurationMs = parseDurationToMillis(jwtProperties.getRefreshExpiration());
-        refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
-        refreshToken.setToken(UUID.randomUUID().toString());
+        refreshToken.setUser(user);
+        refreshToken.setToken(token);
+        refreshToken.setExpiryDate(expiryDate);
 
         return refreshTokenRepository.save(refreshToken);
     }
@@ -43,23 +55,27 @@ public class RefreshTokenService {
         if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
             refreshTokenRepository.delete(token);
             throw new TokenRefreshException(token.getToken(),
-                    "Refresh token was expired. Please make a new signin request");
+                    "Refresh token устарел, войдите в систему снова");
         }
 
         return token;
     }
 
     @Transactional
-    public int deleteByUserId(UUID userId) {
-        return refreshTokenRepository.deleteByUser(userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Пользователь с ID " + userId + " не найден")));
+    public void deleteByUserId(UUID userId) {
+        refreshTokenRepository.deleteByUserId(userId);
     }
 
-    private long parseDurationToMillis(String duration) {
-        if (duration == null || duration.isBlank()) {
-            throw new IllegalArgumentException("Refresh token expiration must be set in application.yml");
-        }
-        return Duration.parse("PT" + duration.toUpperCase()).toMillis();
+    public TokenRefreshResponse generateAccessTokenFromRefreshToken(String refreshToken) {
+        return findByToken(refreshToken)
+                .map(this::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String accessToken = jwtUtils.generateJwtToken(user.getEmail());
+                    return new TokenRefreshResponse(accessToken);
+                })
+                .orElseThrow(() -> new TokenRefreshException(refreshToken,
+                        "Refresh token is not in database!"));
     }
 }
 

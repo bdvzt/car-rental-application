@@ -5,12 +5,14 @@ import com.example.userservice.dtos.requests.RegisterUserRequest;
 import com.example.userservice.dtos.responses.MessageResponse;
 import com.example.userservice.dtos.responses.TokenResponse;
 import com.example.userservice.entities.ERole;
+import com.example.userservice.entities.RefreshToken;
 import com.example.userservice.entities.Role;
 import com.example.userservice.entities.User;
 import com.example.userservice.mappers.UserMapper;
 import com.example.userservice.repositories.RoleRepository;
 import com.example.userservice.repositories.UserRepository;
 import com.example.userservice.security.jwt.services.JwtUtils;
+import com.example.userservice.security.services.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +32,7 @@ public class AuthUserService {
     private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final RefreshTokenService refreshTokenService;
     private final PasswordEncoder passwordEncoder;
 
     public TokenResponse login(LoginUserRequest request) {
@@ -40,9 +44,12 @@ public class AuthUserService {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
+        String accessToken = jwtUtils.generateJwtToken(authentication);
 
-        return new TokenResponse(jwt);
+        UUID userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userId);
+
+        return new TokenResponse(accessToken, refreshToken.getToken());
     }
 
     public MessageResponse register(RegisterUserRequest request) {
