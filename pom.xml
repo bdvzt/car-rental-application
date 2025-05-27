@@ -8,7 +8,8 @@
 	<modules>
 		<module>common</module>
 		<module>user-service</module>
-		<module>gateway</module>
+		<module>api-gateway</module>
+		<module>car-service</module>
 	</modules>
 
 	<parent>
