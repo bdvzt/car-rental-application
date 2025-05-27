@@ -12,8 +12,7 @@ public class GatewayRoutesConfig {
     public RouteLocator gatewayRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("user-service", r -> r
-                        .path("/users/**", "/auth/**")
-                        .filters(f -> f.stripPrefix(1))
+                        .path("/users/**", "/auth/**", "/admin/**")
                         .uri("http://localhost:8081"))
                 .build();
     }
