@@ -4,8 +4,10 @@ import com.example.carservice.dtos.requests.CarModelRequest;
 import com.example.carservice.dtos.requests.CarModelRequest;
 import com.example.carservice.dtos.responses.CarModelDTO;
 import com.example.carservice.entities.CarModel;
+import com.example.carservice.mappers.CarModelMapper;
 import com.example.carservice.repositories.CarModelRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,53 +20,40 @@ import java.util.UUID;
 public class CarModelService {
 
     private final CarModelRepository carModelRepository;
+    private final CarModelMapper carModelMapper;
 
     public List<CarModelDTO> getAllCarModels() {
         return carModelRepository.findAll().stream()
-                .map(this::mapToDTO)
+                .map(carModelMapper::toDto)
                 .toList();
     }
 
     public CarModelDTO getCarModelById(UUID id) {
         CarModel model = carModelRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Car model not found"));
-        return mapToDTO(model);
+                .orElseThrow(() -> new EntityNotFoundException("модель машины не найдена!(((("));
+        return carModelMapper.toDto(model);
     }
 
+    @Transactional
     public CarModelDTO createCarModel(CarModelRequest request) {
-        CarModel model = new CarModel();
-        model.setBrand(request.getBrand());
-        model.setModel(request.getModel());
-        model.setYear(request.getYear());
-        model.setColor(request.getColor());
-        model.setCreatedAt(LocalDateTime.now());
-        model.setCreatedBy("system"); // или получить из securityContext
-        return mapToDTO(carModelRepository.save(model));
+        // TODO: заменить на почту пользователя
+        CarModel model = carModelMapper.toEntity(request, "админ");
+        return carModelMapper.toDto(carModelRepository.save(model));
     }
 
+    @Transactional
     public CarModelDTO updateCarModel(UUID id, CarModelRequest request) {
         CarModel model = carModelRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Car model not found"));
-        model.setBrand(request.getBrand());
-        model.setModel(request.getModel());
-        model.setYear(request.getYear());
-        model.setColor(request.getColor());
-        model.setUpdatedAt(LocalDateTime.now());
-        return mapToDTO(carModelRepository.save(model));
+                .orElseThrow(() -> new EntityNotFoundException("модель машины не найдена!(((("));
+        carModelMapper.updateEntity(model, request);
+        return carModelMapper.toDto(carModelRepository.save(model));
     }
 
+    @Transactional
     public void deleteCarModel(UUID id) {
+        if (!carModelRepository.existsById(id)) {
+            throw new EntityNotFoundException("модель машины не найдена!((((");
+        }
         carModelRepository.deleteById(id);
     }
-
-    private CarModelDTO mapToDTO(CarModel model) {
-        return new CarModelDTO(
-                model.getId(),
-                model.getBrand(),
-                model.getModel(),
-                model.getYear(),
-                model.getColor()
-        );
-    }
 }
-

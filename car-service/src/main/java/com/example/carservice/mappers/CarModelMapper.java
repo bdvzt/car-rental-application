@@ -3,6 +3,7 @@ package com.example.carservice.mappers;
 import com.example.carservice.dtos.requests.CarModelRequest;
 import com.example.carservice.dtos.responses.CarModelDTO;
 import com.example.carservice.entities.CarModel;
+import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -31,12 +32,11 @@ public class CarModelMapper {
         return model;
     }
 
-    public void updateEntity(CarModel entity, CarModelRequest request, String createdBy) {
+    public void updateEntity(CarModel entity, CarModelRequest request) {
         entity.setBrand(request.getBrand());
         entity.setModel(request.getModel());
         entity.setYear(request.getYear());
         entity.setColor(request.getColor());
-        entity.setCreatedBy(createdBy);
         entity.setUpdatedAt(LocalDateTime.now());
     }
 }

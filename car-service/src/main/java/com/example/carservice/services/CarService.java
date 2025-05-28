@@ -3,14 +3,15 @@ package com.example.carservice.services;
 import com.example.carservice.dtos.requests.CreateCarRequest;
 import com.example.carservice.dtos.requests.UpdateCarRequest;
 import com.example.carservice.dtos.responses.CarDetailDTO;
-import com.example.carservice.dtos.responses.CarModelDTO;
 import com.example.carservice.dtos.responses.CarShortDTO;
 import com.example.carservice.entities.Car;
 import com.example.carservice.entities.CarModel;
 import com.example.carservice.entities.enums.CarStatus;
+import com.example.carservice.mappers.CarMapper;
 import com.example.carservice.repositories.CarModelRepository;
 import com.example.carservice.repositories.CarRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,32 +25,35 @@ public class CarService {
 
     private final CarRepository carRepository;
     private final CarModelRepository carModelRepository;
+    private final CarMapper carMapper;
 
-    public List<CarShortDTO> getAllCars() {
-        return carRepository.findAll().stream()
-                .map(this::mapToShortDTO)
-                .toList();
-    }
+    public List<CarShortDTO> getCarsByStatus(CarStatus status) {
+        List<Car> cars;
 
-    public List<CarShortDTO> getAvailableCars() {
-        return carRepository.findAll().stream()
-                .filter(car -> car.getStatus() == CarStatus.AVAILABLE)
-                .map(this::mapToShortDTO)
+        if (status == null) {
+            cars = carRepository.findAll();
+        } else {
+            cars = carRepository.findByStatus(status);
+        }
+
+        return cars.stream()
+                .map(carMapper::toShortDto)
                 .toList();
     }
 
     public CarDetailDTO getCarDetails(UUID carId) {
         Car car = carRepository.findById(carId)
-                .orElseThrow(() -> new EntityNotFoundException("Car not found"));
-        return mapToDetailDTO(car);
+                .orElseThrow(() -> new EntityNotFoundException("машина не найдена:("));
+        return carMapper.toDetailDto(car);
     }
 
+    @Transactional
     public CarDetailDTO createCar(CreateCarRequest request) {
         CarModel model = carModelRepository.findById(request.getCarModel())
-                .orElseThrow(() -> new EntityNotFoundException("Car model not found"));
+                .orElseThrow(() -> new EntityNotFoundException("модель машины не найдена"));
 
         Car car = Car.of(
-                UUID.randomUUID(),
+                UUID.randomUUID(), // TODO: разобраться с генерацией гуайди
                 request.getCarNumber(),
                 model,
                 request.getPricePerDay(),
@@ -57,16 +61,18 @@ public class CarService {
                 CarStatus.AVAILABLE
         );
         car.setCreatedAt(LocalDateTime.now());
-        car.setCreatedBy("system");
-        return mapToDetailDTO(carRepository.save(car));
+        car.setCreatedBy("админ"); // TODO: заменить на почту пользователяяяяяя
+
+        return carMapper.toDetailDto(carRepository.save(car));
     }
 
-    public CarDetailDTO updateCar(UpdateCarRequest request) {
-        Car car = carRepository.findById(request.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Car not found"));
+    @Transactional
+    public CarDetailDTO updateCar(UUID id, UpdateCarRequest request) {
+        Car car = carRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("машина не найдена!"));
 
         CarModel model = carModelRepository.findById(request.getCarModel())
-                .orElseThrow(() -> new EntityNotFoundException("Car model not found"));
+                .orElseThrow(() -> new EntityNotFoundException("модель машины не найдена!"));
 
         car.setCarNumber(request.getCarNumber());
         car.setCarModel(model);
@@ -74,52 +80,26 @@ public class CarService {
         car.setDescription(request.getDescription());
         car.setUpdatedAt(LocalDateTime.now());
 
-        return mapToDetailDTO(carRepository.save(car));
+        return carMapper.toDetailDto(carRepository.save(car));
     }
 
+    @Transactional
     public void deleteCar(UUID id) {
+        if (!carRepository.existsById(id)) {
+            throw new EntityNotFoundException("машина не найдена");
+        }
         carRepository.deleteById(id);
     }
 
+    @Transactional
     public CarDetailDTO updateCarStatus(UUID id, CarStatus status) {
         Car car = carRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Car not found"));
+                .orElseThrow(() -> new EntityNotFoundException("машина не найдена"));
 
         car.setStatus(status);
         car.setUpdatedAt(LocalDateTime.now());
 
-        return mapToDetailDTO(carRepository.save(car));
-    }
-
-    private CarShortDTO mapToShortDTO(Car car) {
-        return new CarShortDTO(
-                car.getId(),
-                car.getCarNumber(),
-                new CarModelDTO(
-                        car.getCarModel().getId(),
-                        car.getCarModel().getBrand(),
-                        car.getCarModel().getModel(),
-                        car.getCarModel().getYear(),
-                        car.getCarModel().getColor()
-                ),
-                car.getPricePerDay()
-        );
-    }
-
-    private CarDetailDTO mapToDetailDTO(Car car) {
-        return new CarDetailDTO(
-                car.getId(),
-                car.getCarNumber(),
-                new CarModelDTO(
-                        car.getCarModel().getId(),
-                        car.getCarModel().getBrand(),
-                        car.getCarModel().getModel(),
-                        car.getCarModel().getYear(),
-                        car.getCarModel().getColor()
-                ),
-                car.getPricePerDay(),
-                car.getDescription(),
-                car.getStatus()
-        );
+        return carMapper.toDetailDto(carRepository.save(car));
     }
 }
+

@@ -1,13 +1,16 @@
 package com.example.carservice.repositories;
 
 import com.example.carservice.entities.Car;
+import com.example.carservice.entities.enums.CarStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface CarRepository extends JpaRepository<Car, UUID> {
 
     Optional<Car> findByCarNumber(String carNumber);
+    List<Car> findByStatus(CarStatus status);
     boolean existsByCarNumber(String carNumber);
 }
