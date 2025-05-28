@@ -1,19 +1,14 @@
 server:
-  port: 8084
+  port: 8082
 
 spring:
   application:
-    name: user-service
+    name: car-service
 
   springdoc:
     swagger-ui:
       enabled: true
       path: /swagger-ui.html
-
-  jwt:
-    secret: b9CkL2vD7pYhRwT8MfQzNsXpAeVtUcGjQzKlBnTyOp90=
-    lifetimeMinutes: 15
-    refreshExpirationDays: 7
 
   jpa:
     show-sql: true
@@ -23,7 +18,7 @@ spring:
         ddl-auto: validate
 
   datasource:
-    url: jdbc:postgresql://localhost:5434/rental_user_service
+    url: jdbc:postgresql://localhost:5434/rental_car_service
     username: postgres
     password: postgres
 
