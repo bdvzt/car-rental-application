@@ -5,6 +5,9 @@ spring:
   application:
     name: api-gateway
 
+  main:
+    web-application-type: reactive
+
   cloud:
     gateway:
       default-filters:
@@ -13,9 +16,7 @@ spring:
         - id: user-service
           uri: http://localhost:8081
           predicates:
-            - Path=/users/**, /auth/**
-          filters:
-            - StripPrefix=1
+            - Path=/profile, /auth/**, /admin/**
 
 #        - id: car-service
 #          uri: http://localhost:8082

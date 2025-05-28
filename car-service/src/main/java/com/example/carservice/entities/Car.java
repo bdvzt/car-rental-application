@@ -1,9 +1,6 @@
 package com.example.carservice.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +14,7 @@ import java.util.UUID;
 @Table(name = "cars")
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "of")
-public class Car {
+public class Car extends BaseEntity {
 
     @Id
     private UUID id;
@@ -30,23 +27,9 @@ public class Car {
     @Column(name = "car_number", unique = true, nullable = false)
     private String carNumber;
 
-    @Column(name = "car_number", unique = true, nullable = false)
-    private String carNumber;
-
-    @Column(name = "engine_number", unique = true, nullable = false)
-    private String engineNumber;
-
-    @Column(name = "brand", nullable = false)
-    private String brand;
-
-    @Column(name = "model", nullable = false)
-    private String model;
-
-    @Column(name = "year")
-    private Integer year;
-
-    @Column(name = "color")
-    private String color;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "car_model_id")
+    private CarModel carModel;
 
     @Column(name = "price_per_day", nullable = false)
     private BigDecimal pricePerDay;
