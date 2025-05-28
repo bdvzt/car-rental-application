@@ -1,5 +1,6 @@
 package com.example.carservice.entities;
 
+import com.example.carservice.entities.enums.CarStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -36,4 +37,8 @@ public class Car extends BaseEntity {
 
     @Column(name = "description", length = 1000)
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private CarStatus status;
 }
