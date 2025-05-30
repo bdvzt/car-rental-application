@@ -5,6 +5,7 @@ import com.example.userservice.dtos.responses.UserProfileResponse;
 import com.example.userservice.security.services.UserDetailsImpl;
 import com.example.userservice.services.ProfileUserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/profile")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
+@Tag(name = "управление профилем", description = "крудилка для профиля")
 public class ProfileUserController {
 
     private final ProfileUserService profileUserService;
@@ -35,6 +37,6 @@ public class ProfileUserController {
     @DeleteMapping
     public ResponseEntity<Void> deactivateProfile(Authentication authentication) {
         profileUserService.deactivateProfile(authentication);
-        return ResponseEntity.noContent().build(); // HTTP 204
+        return ResponseEntity.noContent().build();
     }
 }

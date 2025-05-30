@@ -2,6 +2,7 @@ package com.example.carservice.services;
 
 import com.example.carservice.dtos.requests.CreateCarRequest;
 import com.example.carservice.dtos.requests.UpdateCarRequest;
+import com.example.carservice.dtos.requests.UpdateCarStatusRequest;
 import com.example.carservice.dtos.responses.CarDetailDTO;
 import com.example.carservice.dtos.responses.CarShortDTO;
 import com.example.carservice.entities.Car;
@@ -92,11 +93,11 @@ public class CarService {
     }
 
     @Transactional
-    public CarDetailDTO updateCarStatus(UUID id, CarStatus status) {
+    public CarDetailDTO updateCarStatus(UUID id, UpdateCarStatusRequest request) {
         Car car = carRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("машина не найдена"));
 
-        car.setStatus(status);
+        car.setStatus(request.getStatus());
         car.setUpdatedAt(LocalDateTime.now());
 
         return carMapper.toDetailDto(carRepository.save(car));

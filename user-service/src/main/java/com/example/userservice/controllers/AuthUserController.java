@@ -11,6 +11,7 @@ import com.example.userservice.exeptions.TokenRefreshException;
 import com.example.userservice.security.jwt.services.JwtUtils;
 import com.example.userservice.services.AuthUserService;
 import com.example.userservice.services.RefreshTokenService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Tag(name = "авторизация и регистрация пользователей", description = "+рефреш токенов")
 public class AuthUserController {
 
     private final AuthUserService authUserService;
