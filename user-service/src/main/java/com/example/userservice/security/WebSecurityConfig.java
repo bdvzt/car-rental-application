@@ -27,7 +27,67 @@ public class WebSecurityConfig {
 
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtUtils jwtUtils;
-    private final AuthEntryPointJwt unauthorizedHandler;
+    private final AuthEntryPointJwt unau
+    @Configuration
+    @EnableMethodSecurity
+    @AllArgsConstructor
+    public class WebSecurityConfig {
+
+        private final UserDetailsServiceImpl userDetailsService;
+        private final JwtUtils jwtUtils;
+        private final AuthEntryPointJwt unauthorizedHandler;
+        private final CustomAccessDeniedHandler accessDeniedHandler;
+
+        @Bean
+        public AuthTokenFilter authenticationJwtTokenFilter() {
+            return new AuthTokenFilter(jwtUtils, userDetailsService);
+        }
+
+        @Bean
+        public DaoAuthenticationProvider authenticationProvider() {
+            DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+            authProvider.setUserDetailsService(userDetailsService);
+            authProvider.setPasswordEncoder(passwordEncoder());
+            return authProvider;
+        }
+
+        @Bean
+        public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+            return authConfig.getAuthenticationManager();
+        }
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+            return new BCryptPasswordEncoder();
+        }
+
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+            http
+                    .csrf(AbstractHttpConfigurer::disable)
+                    .exceptionHandling(exception -> exception
+                            .authenticationEntryPoint(unauthorizedHandler)
+                            .accessDeniedHandler(accessDeniedHandler)
+                    )
+                    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                    .authorizeHttpRequests(auth -> auth
+                            .requestMatchers(
+                                    "/auth/**",
+                                    "/swagger-ui.html",
+                                    "/swagger-ui/**",
+                                    "/v3/api-docs/**",
+                                    "/error"
+                            ).permitAll()
+                            .anyRequest().authenticated()
+                    );
+
+            http.authenticationProvider(authenticationProvider());
+            http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
+            return http.build();
+        }
+    }
+    thorizedHandler;
     private final CustomAccessDeniedHandler accessDeniedHandler;
 
     @Bean

@@ -55,10 +55,13 @@ public class JwtUtils {
 
     public boolean validateJwtToken(String authToken) {
         try {
-            Jwts.parserBuilder().setSigningKey(key()).build().parseClaimsJws(authToken);
+            Jwts.parserBuilder()
+                    .setSigningKey(key())
+                    .build()
+                    .parseClaimsJws(authToken);
             return true;
         } catch (Exception e) {
-            logger.error("JWT error: {}", e.getMessage());
+            logger.error("ошибка при валидации токена: {}", e.getMessage());
         }
         return false;
     }

@@ -24,8 +24,6 @@ spring:
 
 jwt:
   secret: b9CkL2vD7pYhRwT8MfQzNsXpAeVtUcGjQzKlBnTyOp90=
-  access-token-expiration: 15m
-  refresh-token-expiration: 7d
 
 logging:
   level:
