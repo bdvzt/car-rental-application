@@ -25,6 +25,17 @@ public class GatewayRoutesConfig {
                                 .stripPrefix(0)
                         )
                         .uri("http://localhost:8081"))
+
+                .route("car-service", r -> r
+                        .path("/car",
+                                "/car/**",
+                                "/car-model",
+                                "/car-model/**")
+                        .filters(f -> f
+                                .filter(jwtAuthenticationFilter)
+                                .stripPrefix(0)
+                        )
+                        .uri("http://localhost:8082"))
                 .build();
     }
 }

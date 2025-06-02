@@ -71,11 +71,11 @@ public class RefreshTokenService {
                 .map(this::verifyExpiration)
                 .map(RefreshToken::getUser)
                 .map(user -> {
-                    String accessToken = jwtUtils.generateJwtToken(user.getEmail());
+                    String accessToken = jwtUtils.generateTokenFromUser(user);
                     return new TokenRefreshResponse(accessToken);
                 })
                 .orElseThrow(() -> new TokenRefreshException(refreshToken,
-                        "Refresh token is not in database!"));
+                        "рефреша в базе нет"));
     }
 }
 

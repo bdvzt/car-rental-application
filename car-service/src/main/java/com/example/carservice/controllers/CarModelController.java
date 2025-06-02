@@ -4,6 +4,7 @@ import com.example.carservice.dtos.requests.CarModelRequest;
 import com.example.carservice.dtos.responses.CarModelDTO;
 import com.example.carservice.services.CarModelService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +16,9 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/car-models")
+@RequestMapping("/car-model")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 @Tag(name = "управление моделями машин", description = "крудилка для моделей машин")
 public class CarModelController {
 

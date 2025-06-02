@@ -8,6 +8,7 @@ import com.example.carservice.dtos.responses.CarShortDTO;
 import com.example.carservice.entities.enums.CarStatus;
 import com.example.carservice.services.CarService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +20,9 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping
+@RequestMapping("/car")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 @Tag(name = "управление машинами", description = "крудилка для машин")
 public class CarController {
 

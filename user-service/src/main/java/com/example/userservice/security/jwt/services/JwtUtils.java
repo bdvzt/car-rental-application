@@ -3,12 +3,16 @@ package com.example.userservice.security.jwt.services;
 import java.security.Key;
 import java.time.Duration;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import com.example.userservice.entities.User;
 import com.example.userservice.security.services.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.*;
@@ -24,15 +28,22 @@ public class JwtUtils {
 
     public String generateJwtToken(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-        return generateTokenFromEmail(userPrincipal.getUsername(), Duration.ofMinutes(jwtProperties.getLifetimeMinutes()));
+
+        List<String> roles = userPrincipal.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        return Jwts.builder()
+                .setSubject(userPrincipal.getUsername())
+                .claim("roles", roles)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + Duration.ofMinutes(jwtProperties.getLifetimeMinutes()).toMillis()))
+                .signWith(key(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
     public String generateRefreshToken(String email) {
         return generateTokenFromEmail(email, Duration.ofDays(jwtProperties.getRefreshExpirationDays()));
-    }
-
-    public String generateJwtToken(String email) {
-        return generateTokenFromEmail(email, Duration.ofMinutes(jwtProperties.getLifetimeMinutes()));
     }
 
     private String generateTokenFromEmail(String email, Duration duration) {
@@ -44,6 +55,20 @@ public class JwtUtils {
                 .compact();
     }
 
+    public String generateTokenFromUser(User user) {
+        List<String> roles = user.getRoles().stream()
+                .map(role -> role.getName().name())
+                .collect(Collectors.toList());
+
+        return Jwts.builder()
+                .setSubject(user.getEmail())
+                .claim("roles", roles)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + Duration.ofMinutes(jwtProperties.getLifetimeMinutes()).toMillis()))
+                .signWith(key(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     public String getEmailFromJwtToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key())
@@ -51,6 +76,16 @@ public class JwtUtils {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+
+    public List<String> getRolesFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.get("roles", List.class);
     }
 
     public boolean validateJwtToken(String authToken) {

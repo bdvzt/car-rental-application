@@ -1,8 +1,8 @@
 package com.example.userservice.security;
 
-import com.example.userservice.security.jwt.services.AuthEntryPointJwt;
+import com.example.common.security.AuthEntryPointJwt;
+import com.example.common.security.CustomAccessDeniedHandler;
 import com.example.userservice.security.jwt.services.AuthTokenFilter;
-import com.example.userservice.security.jwt.services.CustomAccessDeniedHandler;
 import com.example.userservice.security.jwt.services.JwtUtils;
 import com.example.userservice.security.services.UserDetailsServiceImpl;
 import lombok.AllArgsConstructor;
