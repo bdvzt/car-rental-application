@@ -1,9 +1,9 @@
 server:
-  port: 8080
+  port: 8084
 
 spring:
   application:
-    name: apigateway
+    name: api-gateway
 
   autoconfigure:
     exclude:
@@ -14,18 +14,11 @@ spring:
   main:
     web-application-type: reactive
 
-  cloud:
-    gateway:
-      routes:
-        - id: user-service
-          uri: http://localhost:8081
-          predicates:
-            - Path=/users/**, /auth/**
-
 jwt:
   secret: b9CkL2vD7pYhRwT8MfQzNsXpAeVtUcGjQzKlBnTyOp90=
 
 logging:
   level:
-    org.springframework.cloud.gateway: DEBUG
-    org.springframework.web.server.adapter.HttpWebHandlerAdapter: DEBUG
+    root: INFO
+    com.example.gateway: DEBUG
+
