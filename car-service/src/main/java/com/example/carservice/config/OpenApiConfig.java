@@ -1,4 +1,4 @@
-package com.example.common.security;
+package com.example.carservice.config;
 
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

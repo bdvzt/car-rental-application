@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,6 +43,7 @@ public class CarController {
         return ResponseEntity.ok(car);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "добавление новой машины")
     @PostMapping
     public ResponseEntity<CarDetailDTO> createCar(@Valid @RequestBody CreateCarRequest request) {
@@ -49,6 +51,7 @@ public class CarController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "обновить данные у машины")
     @PutMapping("/{id}")
     public ResponseEntity<CarDetailDTO> updateCar(@PathVariable UUID id, @Valid @RequestBody UpdateCarRequest request) {
@@ -56,6 +59,7 @@ public class CarController {
         return ResponseEntity.ok(updated);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "удалить машину")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCar(@PathVariable UUID id) {
@@ -63,6 +67,7 @@ public class CarController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')") // TODO: - надо или нет хз
     @Operation(summary = "изменить статус автомобиля")
     @PatchMapping("/{id}/status")
     public ResponseEntity<CarDetailDTO> updateCarStatus(@PathVariable UUID id, @Valid @RequestBody UpdateCarStatusRequest request) {

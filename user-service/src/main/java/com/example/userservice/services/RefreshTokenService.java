@@ -1,19 +1,18 @@
 package com.example.userservice.services;
 
+import com.example.common.security.JwtProperties;
 import com.example.userservice.dtos.responses.TokenRefreshResponse;
 import com.example.userservice.entities.RefreshToken;
 import com.example.userservice.entities.User;
 import com.example.userservice.exeptions.TokenRefreshException;
 import com.example.userservice.repositories.RefreshTokenRepository;
 import com.example.userservice.repositories.UserRepository;
-import com.example.userservice.security.jwt.services.JwtProperties;
 import com.example.userservice.security.jwt.services.JwtUtils;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;

@@ -10,11 +10,6 @@ spring:
       enabled: true
       path: /swagger-ui.html
 
-  jwt:
-    secret: b9CkL2vD7pYhRwT8MfQzNsXpAeVtUcGjQzKlBnTyOp90=
-    lifetimeMinutes: 15
-    refreshExpirationDays: 7
-
   jpa:
     show-sql: true
     properties:
@@ -29,3 +24,8 @@ spring:
 
   flyway:
     enabled: true
+
+jwt:
+  secret: b9CkL2vD7pYhRwT8MfQzNsXpAeVtUcGjQzKlBnTyOp90=
+  lifetimeMinutes: 15
+  refreshExpirationDays: 7

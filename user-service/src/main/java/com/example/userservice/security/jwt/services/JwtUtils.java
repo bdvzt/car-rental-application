@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.example.common.security.JwtProperties;
 import com.example.userservice.entities.User;
 import com.example.userservice.security.services.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;

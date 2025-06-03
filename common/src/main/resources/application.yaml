@@ -1,2 +1,4 @@
 jwt:
   secret: b9CkL2vD7pYhRwT8MfQzNsXpAeVtUcGjQzKlBnTyOp90=
+  lifetimeMinutes: 15
+  refreshExpirationDays: 7
