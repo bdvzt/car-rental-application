@@ -3,19 +3,20 @@ package com.example.carservice.entities;
 import com.example.carservice.entities.enums.CarStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
 @Entity
 @Table(name = "cars")
 @NoArgsConstructor
-@AllArgsConstructor(staticName = "of")
-public class Car extends BaseEntity {
+public class Car {
 
     @Id
     private UUID id;
@@ -41,4 +42,15 @@ public class Car extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private CarStatus status;
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @Column(name = "created_by", nullable = false, updatable = false)
+    private UUID createdBy;
 }

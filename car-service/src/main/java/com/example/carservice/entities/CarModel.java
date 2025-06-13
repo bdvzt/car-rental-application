@@ -4,15 +4,17 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
 @Entity
 @Table(name = "car_models")
 @NoArgsConstructor
-@AllArgsConstructor(staticName = "of")
-public class CarModel extends BaseEntity {
+public class CarModel {
 
     @Id
     @GeneratedValue
@@ -29,4 +31,15 @@ public class CarModel extends BaseEntity {
 
     @Column(name = "color", nullable = false)
     private String color;
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @Column(name = "created_by", nullable = false, updatable = false)
+    private String createdBy;
 }

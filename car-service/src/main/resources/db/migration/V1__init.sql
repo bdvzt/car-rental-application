@@ -1,30 +1,27 @@
+CREATE TYPE car_status AS ENUM ('AVAILABLE', 'BOOKED', 'RENTED', 'UNDER_REPAIR');
+
 CREATE TABLE car_models
 (
     id         UUID PRIMARY KEY,
     brand      VARCHAR(255) NOT NULL,
     model      VARCHAR(255) NOT NULL,
-    year       INTEGER      NOT NULL,
+    year       INT          NOT NULL,
     color      VARCHAR(255) NOT NULL,
-
-    created_at TIMESTAMP    NOT NULL,
+    created_at TIMESTAMP    NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP,
-    created_by VARCHAR(255) NOT NULL
+    created_by UUID         NOT NULL
 );
 
 CREATE TABLE cars
 (
     id            UUID PRIMARY KEY,
-    car_number    VARCHAR(20)    NOT NULL UNIQUE,
-    car_model_id  UUID           NOT NULL,
-    price_per_day NUMERIC(10, 2) NOT NULL,
+    car_number    VARCHAR(20) UNIQUE NOT NULL,
+    car_model_id  UUID               NOT NULL REFERENCES car_models (id),
+    price_per_day NUMERIC(10, 2)     NOT NULL,
     description   VARCHAR(1000),
-
-    created_at    TIMESTAMP      NOT NULL,
+    status        car_status         NOT NULL,
+    created_at    TIMESTAMP          NOT NULL DEFAULT NOW(),
     updated_at    TIMESTAMP,
-    created_by    VARCHAR(255)   NOT NULL,
-
-    CONSTRAINT fk_car_model
-        FOREIGN KEY (car_model_id)
-            REFERENCES car_models (id)
-            ON DELETE CASCADE
+    created_by    UUID               NOT NULL
 );
+

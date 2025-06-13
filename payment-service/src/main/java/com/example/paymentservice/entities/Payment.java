@@ -1,6 +1,6 @@
-package com.example.bookingservice.entities;
+package com.example.paymentservice.entities;
 
-import com.example.bookingservice.entities.enums.BookingStatus;
+import com.example.paymentservice.entities.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,35 +8,30 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "bookings")
+@Table(name = "payments")
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "of")
-public class Booking {
+public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "user_id", nullable = false)
-    private UUID userId;
+    @Column(name = "booking_id", nullable = false)
+    private UUID bookingId;
 
-    @Column(name = "car_id", nullable = false)
-    private UUID carId;
-
-    @Column(name = "start_date", nullable = false)
-    private LocalDateTime startDate;
-
-    @Column(name = "end_date", nullable = false)
-    private LocalDateTime endDate;
+    @Column(name = "price", nullable = false)
+    private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
-    private BookingStatus status;
+    @Column(name = "payment_status", nullable = false)
+    private PaymentStatus paymentStatus;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)

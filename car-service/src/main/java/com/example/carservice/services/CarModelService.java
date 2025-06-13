@@ -36,11 +36,15 @@ public class CarModelService {
 
     @Transactional
     public CarModelDTO createCarModel(CarModelRequest request) {
-        // TODO: заменить на почту пользователя
-        CarModel model = carModelMapper.toEntity(request, "админ");
+        CarModel model = new CarModel();
+        model.setBrand(request.getBrand());
+        model.setModel(request.getModel());
+        model.setYear(request.getYear());
+        model.setColor(request.getColor());
+        model.setCreatedBy("ebc0465f-4f19-427d-bb8b-7c72874fe62e");
+
         return carModelMapper.toDto(carModelRepository.save(model));
     }
-
     @Transactional
     public CarModelDTO updateCarModel(UUID id, CarModelRequest request) {
         CarModel model = carModelRepository.findById(id)

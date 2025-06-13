@@ -31,7 +31,7 @@ public class CarMapper {
                 car.getPricePerDay(),
                 car.getDescription(),
                 car.getStatus(),
-                car.getCreatedBy(),
+                car.getCreatedBy().toString(),
                 car.getCreatedAt(),
                 car.getUpdatedAt()
         );

@@ -53,16 +53,14 @@ public class CarService {
         CarModel model = carModelRepository.findById(request.getCarModel())
                 .orElseThrow(() -> new EntityNotFoundException("модель машины не найдена"));
 
-        Car car = Car.of(
-                UUID.randomUUID(), // TODO: разобраться с генерацией гуайди
-                request.getCarNumber(),
-                model,
-                request.getPricePerDay(),
-                request.getDescription(),
-                CarStatus.AVAILABLE
-        );
-        car.setCreatedAt(LocalDateTime.now());
-        car.setCreatedBy("админ"); // TODO: заменить на почту пользователяяяяяя
+        Car car = new Car();
+        car.setId(UUID.randomUUID());
+        car.setCarNumber(request.getCarNumber());
+        car.setCarModel(model);
+        car.setPricePerDay(request.getPricePerDay());
+        car.setDescription(request.getDescription());
+        car.setStatus(CarStatus.AVAILABLE);
+        car.setCreatedBy(UUID.fromString("ebc0465f-4f19-427d-bb8b-7c72874fe62e")); // TODO: заменить на id из токена
 
         return carMapper.toDetailDto(carRepository.save(car));
     }
@@ -79,7 +77,6 @@ public class CarService {
         car.setCarModel(model);
         car.setPricePerDay(request.getPricePerDay());
         car.setDescription(request.getDescription());
-        car.setUpdatedAt(LocalDateTime.now());
 
         return carMapper.toDetailDto(carRepository.save(car));
     }
@@ -98,7 +95,6 @@ public class CarService {
                 .orElseThrow(() -> new EntityNotFoundException("машина не найдена"));
 
         car.setStatus(request.getStatus());
-        car.setUpdatedAt(LocalDateTime.now());
 
         return carMapper.toDetailDto(carRepository.save(car));
     }
