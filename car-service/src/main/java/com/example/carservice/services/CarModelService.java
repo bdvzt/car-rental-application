@@ -38,7 +38,7 @@ public class CarModelService {
     }
 
     @Transactional
-    public CarModelDTO createCarModel(CarModelRequest request) {
+    public void createCarModel(CarModelRequest request) {
         String token = jwtUtils.getCurrentToken();
         UUID userId = jwtUtils.getUserIdFromJwtToken(token);
 
@@ -49,15 +49,15 @@ public class CarModelService {
         model.setColor(request.getColor());
         model.setCreatedBy(userId);
 
-        return carModelMapper.toDto(carModelRepository.save(model));
+        carModelRepository.save(model);
     }
 
     @Transactional
-    public CarModelDTO updateCarModel(UUID id, CarModelRequest request) {
+    public void updateCarModel(UUID id, CarModelRequest request) {
         CarModel model = carModelRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("модель машины не найдена!(((("));
         carModelMapper.updateEntity(model, request);
-        return carModelMapper.toDto(carModelRepository.save(model));
+        carModelRepository.save(model);
     }
 
     @Transactional

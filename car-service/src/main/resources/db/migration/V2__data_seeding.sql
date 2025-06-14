@@ -13,8 +13,8 @@ INSERT INTO cars (id, car_number, car_model_id, price_per_day, description, stat
 VALUES
     ('a1b2c3d4-e5f6-4781-a1a1-a1a1a1a1a1a1', 'А777АА03', 'b9904c45-3084-4775-afc9-9ea6dfc03350', 3000.00, 'Комфортный седан', 'AVAILABLE', now(), 'ebc0465f-4f19-427d-bb8b-7c72874fe62e'),
     ('b2c3d4e5-f6a7-4892-b2b2-b2b2b2b2b2b2', 'А666АА03', '6d45a4eb-724a-4521-bc76-ec7be92ee7fd', 5000.00, 'Полный привод, люкс', 'AVAILABLE', now(), 'ebc0465f-4f19-427d-bb8b-7c72874fe62e'),
-    ('c3d4e5f6-a7b8-4903-c3c3-c3c3c3c3c3c3', 'А665АА03', '6d45a4eb-724a-4521-bc76-ec7be92ee7fd', 4900.00, 'Немного дешевле, но всё ещё люкс', 'BOOKED', now(), 'ebc0465f-4f19-427d-bb8b-7c72874fe62e'),
-    ('d4e5f6a7-b8c9-4014-d4d4-d4d4d4d4d4d4', 'А664АА03', '5a854216-d509-4996-8300-6ac8934c7ea0', 5200.00, 'BMW X6 белая, премиум комплектация', 'RENTED', now(), 'ebc0465f-4f19-427d-bb8b-7c72874fe62e'),
+    ('c3d4e5f6-a7b8-4903-c3c3-c3c3c3c3c3c3', 'А665АА03', '6d45a4eb-724a-4521-bc76-ec7be92ee7fd', 4900.00, 'Немного дешевле, но всё ещё люкс', 'AVAILABLE', now(), 'ebc0465f-4f19-427d-bb8b-7c72874fe62e'),
+    ('d4e5f6a7-b8c9-4014-d4d4-d4d4d4d4d4d4', 'А664АА03', '5a854216-d509-4996-8300-6ac8934c7ea0', 5200.00, 'BMW X6 белая, премиум комплектация', 'AVAILABLE', now(), 'ebc0465f-4f19-427d-bb8b-7c72874fe62e'),
     ('e5f6a7b8-c9d0-4125-e5e5-e5e5e5e5e5e5', 'А663АА03', '2cff69fb-79cc-4a9b-bad4-73c15caefbba', 6100.00, 'Mercedes черный с панорамой', 'AVAILABLE', now(), 'ebc0465f-4f19-427d-bb8b-7c72874fe62e'),
     ('f6a7b8c9-d0e1-4236-f6f6-f6f6f6f6f6f6', 'А662АА03', '51048f97-d0ce-402d-93d1-0de65a4bd6f1', 2100.00, 'Hyundai Solaris для городских поездок', 'UNDER_REPAIR', now(), 'ebc0465f-4f19-427d-bb8b-7c72874fe62e'),
     ('a7b8c9d0-e1f2-4347-a7a7-a7a7a7a7a7a7', 'А003АА03', 'e1a7f20d-188f-4d1e-818f-fccf99c1c20d', 1500.00, 'Lada Vesta, стандарт', 'AVAILABLE', now(), 'ebc0465f-4f19-427d-bb8b-7c72874fe62e'),

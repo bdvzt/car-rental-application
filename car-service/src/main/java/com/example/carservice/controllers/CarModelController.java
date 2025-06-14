@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 @RestController
 @RequestMapping("/car-model")
 @RequiredArgsConstructor
@@ -38,23 +37,25 @@ public class CarModelController {
         return carModelService.getCarModelById(id);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "создание новой модели машины")
     @PostMapping
-    public ResponseEntity<CarModelDTO> createCarModel(@Valid @RequestBody CarModelRequest request) {
-        CarModelDTO created = carModelService.createCarModel(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    public ResponseEntity<Void> createCarModel(@Valid @RequestBody CarModelRequest request) {
+        carModelService.createCarModel(request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "обновление данных модели машины")
     @PutMapping("/{id}")
-    public ResponseEntity<CarModelDTO> updateCarModel(@PathVariable UUID id, @Valid @RequestBody CarModelRequest request) {
-        CarModelDTO updated = carModelService.updateCarModel(id, request);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<Void> updateCarModel(@PathVariable UUID id, @Valid @RequestBody CarModelRequest request) {
+        carModelService.updateCarModel(id, request);
+        return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "удаление модели машины")
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> deleteCarModel(@PathVariable UUID id) {
         carModelService.deleteCarModel(id);
         return ResponseEntity.noContent().build();

@@ -46,17 +46,17 @@ public class CarController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "добавление новой машины")
     @PostMapping
-    public ResponseEntity<CarDetailDTO> createCar(@Valid @RequestBody CreateCarRequest request) {
-        CarDetailDTO created = carService.createCar(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    public ResponseEntity<Void> createCar(@Valid @RequestBody CreateCarRequest request) {
+        carService.createCar(request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "обновить данные у машины")
     @PutMapping("/{id}")
-    public ResponseEntity<CarDetailDTO> updateCar(@PathVariable UUID id, @Valid @RequestBody UpdateCarRequest request) {
-        CarDetailDTO updated = carService.updateCar(id, request);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<Void> updateCar(@PathVariable UUID id, @Valid @RequestBody UpdateCarRequest request) {
+        carService.updateCar(id, request);
+        return ResponseEntity.noContent().build();
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -67,11 +67,11 @@ public class CarController {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')") // TODO: - надо или нет хз
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "изменить статус автомобиля")
     @PatchMapping("/{id}/status")
-    public ResponseEntity<CarDetailDTO> updateCarStatus(@PathVariable UUID id, @Valid @RequestBody UpdateCarStatusRequest request) {
-        CarDetailDTO updated = carService.updateCarStatus(id, request);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<Void> updateCarStatus(@PathVariable UUID id, @Valid @RequestBody UpdateCarStatusRequest request) {
+        carService.updateCarStatus(id, request);
+        return ResponseEntity.noContent().build();
     }
 }

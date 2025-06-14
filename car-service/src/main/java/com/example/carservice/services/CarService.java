@@ -12,7 +12,9 @@ import com.example.carservice.mappers.CarMapper;
 import com.example.carservice.repositories.CarModelRepository;
 import com.example.carservice.repositories.CarRepository;
 import com.example.carservice.security.JwtUtils;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -52,7 +54,7 @@ public class CarService {
     }
 
     @Transactional
-    public CarDetailDTO createCar(CreateCarRequest request) {
+    public Car createCar(CreateCarRequest request) {
         CarModel model = carModelRepository.findById(request.getCarModel())
                 .orElseThrow(() -> new EntityNotFoundException("модель машины не найдена"));
 
@@ -68,11 +70,11 @@ public class CarService {
         car.setStatus(CarStatus.AVAILABLE);
         car.setCreatedBy(userId);
 
-        return carMapper.toDetailDto(carRepository.save(car));
+        return carRepository.save(car);
     }
 
     @Transactional
-    public CarDetailDTO updateCar(UUID id, UpdateCarRequest request) {
+    public Car updateCar(UUID id, UpdateCarRequest request) {
         Car car = carRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("машина не найдена!"));
 
@@ -84,7 +86,7 @@ public class CarService {
         car.setPricePerDay(request.getPricePerDay());
         car.setDescription(request.getDescription());
 
-        return carMapper.toDetailDto(carRepository.save(car));
+        return carRepository.save(car);
     }
 
     @Transactional
@@ -96,13 +98,12 @@ public class CarService {
     }
 
     @Transactional
-    public CarDetailDTO updateCarStatus(UUID id, UpdateCarStatusRequest request) {
+    public void updateCarStatus(UUID id, UpdateCarStatusRequest request) {
         Car car = carRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("машина не найдена"));
 
         car.setStatus(request.getStatus());
-
-        return carMapper.toDetailDto(carRepository.save(car));
+        carRepository.save(car);
     }
 }
 
