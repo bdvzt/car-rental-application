@@ -6,6 +6,7 @@ import com.example.carservice.dtos.responses.CarModelDTO;
 import com.example.carservice.entities.CarModel;
 import com.example.carservice.mappers.CarModelMapper;
 import com.example.carservice.repositories.CarModelRepository;
+import com.example.carservice.security.JwtUtils;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,8 @@ public class CarModelService {
     private final CarModelRepository carModelRepository;
     private final CarModelMapper carModelMapper;
 
+    private final JwtUtils jwtUtils;
+
     public List<CarModelDTO> getAllCarModels() {
         return carModelRepository.findAll().stream()
                 .map(carModelMapper::toDto)
@@ -36,15 +39,19 @@ public class CarModelService {
 
     @Transactional
     public CarModelDTO createCarModel(CarModelRequest request) {
+        String token = jwtUtils.getCurrentToken();
+        UUID userId = jwtUtils.getUserIdFromJwtToken(token);
+
         CarModel model = new CarModel();
         model.setBrand(request.getBrand());
         model.setModel(request.getModel());
         model.setYear(request.getYear());
         model.setColor(request.getColor());
-        model.setCreatedBy("ebc0465f-4f19-427d-bb8b-7c72874fe62e");
+        model.setCreatedBy(userId);
 
         return carModelMapper.toDto(carModelRepository.save(model));
     }
+
     @Transactional
     public CarModelDTO updateCarModel(UUID id, CarModelRequest request) {
         CarModel model = carModelRepository.findById(id)

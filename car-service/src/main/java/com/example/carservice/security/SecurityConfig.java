@@ -2,7 +2,6 @@ package com.example.carservice.security;
 
 import com.example.common.security.AuthEntryPointJwt;
 import com.example.common.security.CustomAccessDeniedHandler;
-import com.example.common.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtUtils jwtUtils;
     private final AuthEntryPointJwt unauthorizedHandler;
     private final CustomAccessDeniedHandler accessDeniedHandler;
 
@@ -39,7 +38,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 );
 
-        http.addFilterBefore(new JwtAuthFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

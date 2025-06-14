@@ -33,14 +33,18 @@ public class JwtUtils {
         List<String> roles = userPrincipal.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
-
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .setSubject(userPrincipal.getUsername())
+                .claim("id", userPrincipal.getId().toString())
                 .claim("roles", roles)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + Duration.ofMinutes(jwtProperties.getLifetimeMinutes()).toMillis()))
                 .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
+
+        logger.info("Generated JWT Token: {}", token);
+
+        return token;
     }
 
     public String generateRefreshToken(String email) {

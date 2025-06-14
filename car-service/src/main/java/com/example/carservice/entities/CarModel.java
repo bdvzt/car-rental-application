@@ -41,5 +41,5 @@ public class CarModel {
     private LocalDateTime updatedAt;
 
     @Column(name = "created_by", nullable = false, updatable = false)
-    private String createdBy;
+    private UUID createdBy;
 }

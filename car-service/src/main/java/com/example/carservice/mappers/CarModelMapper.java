@@ -21,17 +21,6 @@ public class CarModelMapper {
         );
     }
 
-    public CarModel toEntity(CarModelRequest request, String createdBy) {
-        CarModel model = new CarModel();
-        model.setBrand(request.getBrand());
-        model.setModel(request.getModel());
-        model.setYear(request.getYear());
-        model.setColor(request.getColor());
-        model.setCreatedAt(LocalDateTime.now());
-        model.setCreatedBy(createdBy);
-        return model;
-    }
-
     public void updateEntity(CarModel entity, CarModelRequest request) {
         entity.setBrand(request.getBrand());
         entity.setModel(request.getModel());

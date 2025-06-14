@@ -11,6 +11,7 @@ import com.example.carservice.entities.enums.CarStatus;
 import com.example.carservice.mappers.CarMapper;
 import com.example.carservice.repositories.CarModelRepository;
 import com.example.carservice.repositories.CarRepository;
+import com.example.carservice.security.JwtUtils;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,8 @@ public class CarService {
     private final CarRepository carRepository;
     private final CarModelRepository carModelRepository;
     private final CarMapper carMapper;
+
+    private final JwtUtils jwtUtils;
 
     public List<CarShortDTO> getCarsByStatus(CarStatus status) {
         List<Car> cars;
@@ -53,6 +56,9 @@ public class CarService {
         CarModel model = carModelRepository.findById(request.getCarModel())
                 .orElseThrow(() -> new EntityNotFoundException("модель машины не найдена"));
 
+        String token = jwtUtils.getCurrentToken();
+        UUID userId = jwtUtils.getUserIdFromJwtToken(token);
+
         Car car = new Car();
         car.setId(UUID.randomUUID());
         car.setCarNumber(request.getCarNumber());
@@ -60,7 +66,7 @@ public class CarService {
         car.setPricePerDay(request.getPricePerDay());
         car.setDescription(request.getDescription());
         car.setStatus(CarStatus.AVAILABLE);
-        car.setCreatedBy(UUID.fromString("ebc0465f-4f19-427d-bb8b-7c72874fe62e")); // TODO: заменить на id из токена
+        car.setCreatedBy(userId);
 
         return carMapper.toDetailDto(carRepository.save(car));
     }
