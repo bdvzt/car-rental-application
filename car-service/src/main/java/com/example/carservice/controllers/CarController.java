@@ -68,7 +68,7 @@ public class CarController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Operation(summary = "изменить статус автомобиля")
+    @Operation(summary = "изменить статус машины")
     @PatchMapping("/{id}/status")
     public ResponseEntity<Void> updateCarStatus(@PathVariable UUID id, @Valid @RequestBody UpdateCarStatusRequest request) {
         carService.updateCarStatus(id, request);

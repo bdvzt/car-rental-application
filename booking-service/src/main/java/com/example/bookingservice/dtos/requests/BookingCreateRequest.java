@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
-public class CreateBookingRequest {
+public class BookingCreateRequest {
 
     @NotNull(message = "id машины обязателен")
     private UUID carId;

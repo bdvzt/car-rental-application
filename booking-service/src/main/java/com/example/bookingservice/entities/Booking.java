@@ -15,7 +15,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "bookings")
 @NoArgsConstructor
-@AllArgsConstructor(staticName = "of")
 public class Booking {
 
     @Id
