@@ -24,33 +24,59 @@ public class ProfileUserService {
 
     public UserProfileResponse getProfile(Authentication authentication) {
         String email = extractEmail(authentication);
+
+        if (email == null || email.isBlank()) {
+            throw new IllegalStateException("Не удалось получить email пользователя из токена");
+        }
+
         User user = getUserByEmail(email);
         return UserMapper.mapUserToResponse(user);
     }
 
-    public UserProfileResponse updateProfile(Authentication authentication, UpdateUserProfileRequest request) {
+    public void updateProfile(Authentication authentication, UpdateUserProfileRequest request) {
         String email = extractEmail(authentication);
+
+        if (email == null || email.isBlank()) {
+            throw new IllegalStateException("Не удалось получить email пользователя из токена");
+        }
+
         User user = getUserByEmail(email);
 
-        UserMapper.mapUpdateRequestToUser(user, request, passwordEncoder);
-        userRepository.save(user);
-
-        return UserMapper.mapUserToResponse(user);
+        try {
+            UserMapper.mapUpdateRequestToUser(user, request, passwordEncoder);
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new RuntimeException("Не удалось обновить профиль пользователя");
+        }
     }
 
     public void deactivateProfile(Authentication authentication) {
         String email = extractEmail(authentication);
+
+        if (email == null || email.isBlank()) {
+            throw new IllegalStateException("Не удалось получить email пользователя из токена");
+        }
+
         User user = getUserByEmail(email);
+
+        if (!user.isActive()) {
+            throw new IllegalStateException("Профиль уже деактивирован");
+        }
+
         user.setActive(false);
         userRepository.save(user);
     }
 
     private User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new NoSuchElementException("Пользователь не найден"));
+                .orElseThrow(() -> new NoSuchElementException("Пользователь с email " + email + " не найден"));
     }
 
     private String extractEmail(Authentication authentication) {
+        if (authentication == null || authentication.getPrincipal() == null) {
+            throw new IllegalStateException("Аутентификация не выполнена");
+        }
+
         return ((UserDetailsImpl) authentication.getPrincipal()).getUsername();
     }
 }

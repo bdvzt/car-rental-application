@@ -3,14 +3,11 @@ package com.example.userservice.controllers;
 import com.example.userservice.dtos.requests.LoginUserRequest;
 import com.example.userservice.dtos.requests.RegisterUserRequest;
 import com.example.userservice.dtos.requests.TokenRefreshRequest;
-import com.example.userservice.dtos.responses.MessageResponse;
 import com.example.userservice.dtos.responses.TokenRefreshResponse;
 import com.example.userservice.dtos.responses.TokenResponse;
-import com.example.userservice.entities.RefreshToken;
-import com.example.userservice.exeptions.TokenRefreshException;
-import com.example.userservice.security.jwt.services.JwtUtils;
 import com.example.userservice.services.AuthUserService;
 import com.example.userservice.services.RefreshTokenService;
+import dtos.ResponseDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,14 +29,12 @@ public class AuthUserController {
     private final AuthUserService authUserService;
     private final RefreshTokenService refreshTokenService;
 
-    private final JwtUtils jwtUtils;
-
     @Operation(summary = "Registration",
             description = "Регистрация пользователя",
             security = @SecurityRequirement(name = ""))
     @PostMapping("/register")
-    public ResponseEntity<MessageResponse> register(@Valid @RequestBody RegisterUserRequest request) {
-        MessageResponse response = authUserService.register(request);
+    public ResponseEntity<ResponseDTO> register(@Valid @RequestBody RegisterUserRequest request) {
+        ResponseDTO response = authUserService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

@@ -3,17 +3,20 @@ package com.example.bookingservice.entities;
 import com.example.bookingservice.entities.enums.BookingStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Builder
 @Data
 @Entity
 @Table(name = "booking_history")
 @NoArgsConstructor
-@AllArgsConstructor(staticName = "of")
+@AllArgsConstructor
 public class BookingHistory {
 
     @Id
@@ -27,6 +30,7 @@ public class BookingHistory {
     @Column(name = "status", nullable = false)
     private BookingStatus status;
 
-    @Column(name = "changed_at", nullable = false)
-    private LocalDateTime changedAt = LocalDateTime.now();
+    @CreationTimestamp
+    @Column(name = "changed_at", nullable = false, updatable = false)
+    private LocalDateTime changedAt;
 }

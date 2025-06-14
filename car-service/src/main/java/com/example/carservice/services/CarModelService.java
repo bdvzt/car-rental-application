@@ -39,8 +39,7 @@ public class CarModelService {
 
     @Transactional
     public void createCarModel(CarModelRequest request) {
-        String token = jwtUtils.getCurrentToken();
-        UUID userId = jwtUtils.getUserIdFromJwtToken(token);
+        UUID userId = jwtUtils.getCurrentUserId();
 
         CarModel model = new CarModel();
         model.setBrand(request.getBrand());

@@ -1,10 +1,11 @@
-package com.example.userservice.dtos.responses;
+package dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class MessageResponse {
+public class ResponseDTO {
+    private int statusCode;
     private String message;
 }

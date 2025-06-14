@@ -1,4 +1,4 @@
-package com.example.carservice.security;
+package com.example.bookingservice.security;
 
 import com.example.common.security.JwtProperties;
 import io.jsonwebtoken.Claims;

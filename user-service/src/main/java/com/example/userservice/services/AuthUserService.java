@@ -2,7 +2,6 @@ package com.example.userservice.services;
 
 import com.example.userservice.dtos.requests.LoginUserRequest;
 import com.example.userservice.dtos.requests.RegisterUserRequest;
-import com.example.userservice.dtos.responses.MessageResponse;
 import com.example.userservice.dtos.responses.TokenResponse;
 import com.example.userservice.entities.ERole;
 import com.example.userservice.entities.RefreshToken;
@@ -13,7 +12,10 @@ import com.example.userservice.repositories.RoleRepository;
 import com.example.userservice.repositories.UserRepository;
 import com.example.userservice.security.jwt.services.JwtUtils;
 import com.example.userservice.security.services.UserDetailsImpl;
+import dtos.ResponseDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -43,28 +45,41 @@ public class AuthUserService {
                 )
         );
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String accessToken = jwtUtils.generateJwtToken(authentication);
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        UUID userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userId);
+        if (!userDetails.isEnabled()) {
+            throw new UnsupportedOperationException("Аккаунт не активен. Обратитесь к администратору");
+        }
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String accessToken = jwtUtils.generateJwtToken(authentication);
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
         return new TokenResponse(accessToken, refreshToken.getToken());
     }
-// TODO: позволить админу зарегаться как юзеру
-    public MessageResponse register(RegisterUserRequest request) {
+
+    // TODO: позволить админу зарегаться как юзеру
+    public ResponseDTO register(RegisterUserRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Такой email уже существует");
         }
 
         Role defaultRole = roleRepository.findByName(ERole.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException("Роль не найдена"));
+                .orElseThrow(() -> new IllegalStateException("Роль не найдена"));
 
         Set<Role> roles = Set.of(defaultRole);
-
         User user = UserMapper.mapRegisterRequestToUser(request, roles, passwordEncoder);
-        userRepository.save(user);
 
-        return new MessageResponse("Пользователь успешно зарегистрирован");
+        try {
+            userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException("Ошибка при сохранении пользователя");
+        }
+
+        return new ResponseDTO(
+                HttpStatus.CREATED.value(),
+                "Пользователь успешно зарегистрирован"
+        );
     }
 }

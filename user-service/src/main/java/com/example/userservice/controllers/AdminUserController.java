@@ -2,6 +2,7 @@ package com.example.userservice.controllers;
 
 import com.example.userservice.dtos.responses.UserProfileResponse;
 import com.example.userservice.services.AdminUserService;
+import dtos.ResponseDTO;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -33,11 +34,11 @@ public class AdminUserController {
     }
 
     @PatchMapping("/{userId}/active")
-    public ResponseEntity<Void> updateActiveStatus(
+    public ResponseEntity<ResponseDTO> updateActiveStatus(
             @PathVariable UUID userId,
             @RequestParam boolean active
     ) {
-        adminUserService.setUserActiveStatus(userId, active);
-        return ResponseEntity.noContent().build();
+        ResponseDTO response = adminUserService.setUserActiveStatus(userId, active);
+        return ResponseEntity.ok(response);
     }
 }

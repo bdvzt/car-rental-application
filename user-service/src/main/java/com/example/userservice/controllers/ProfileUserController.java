@@ -4,6 +4,7 @@ import com.example.userservice.dtos.requests.UpdateUserProfileRequest;
 import com.example.userservice.dtos.responses.UserProfileResponse;
 import com.example.userservice.security.services.UserDetailsImpl;
 import com.example.userservice.services.ProfileUserService;
+import dtos.ResponseDTO;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -27,16 +28,17 @@ public class ProfileUserController {
     }
 
     @PatchMapping
-    public ResponseEntity<UserProfileResponse> updateProfile(
+    public ResponseEntity<ResponseDTO> updateProfile(
             Authentication authentication,
             @Valid @RequestBody UpdateUserProfileRequest request
     ) {
-        return ResponseEntity.ok(profileUserService.updateProfile(authentication, request));
+        profileUserService.updateProfile(authentication, request);
+        return ResponseEntity.ok(new ResponseDTO(200, "Профиль успешно обновлен"));
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deactivateProfile(Authentication authentication) {
+    public ResponseEntity<ResponseDTO> deactivateProfile(Authentication authentication) {
         profileUserService.deactivateProfile(authentication);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new ResponseDTO(200, "Профиль успешно деактивирован"));
     }
 }

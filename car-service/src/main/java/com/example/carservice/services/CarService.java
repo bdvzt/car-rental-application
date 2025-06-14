@@ -58,8 +58,7 @@ public class CarService {
         CarModel model = carModelRepository.findById(request.getCarModel())
                 .orElseThrow(() -> new EntityNotFoundException("модель машины не найдена"));
 
-        String token = jwtUtils.getCurrentToken();
-        UUID userId = jwtUtils.getUserIdFromJwtToken(token);
+        UUID userId = jwtUtils.getCurrentUserId();
 
         Car car = new Car();
         car.setId(UUID.randomUUID());
