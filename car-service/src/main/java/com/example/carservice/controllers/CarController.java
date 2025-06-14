@@ -7,6 +7,7 @@ import com.example.carservice.dtos.responses.CarDetailDTO;
 import com.example.carservice.dtos.responses.CarShortDTO;
 import com.example.carservice.entities.enums.CarStatus;
 import com.example.carservice.services.CarService;
+import dtos.ResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -46,32 +47,33 @@ public class CarController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "добавление новой машины")
     @PostMapping
-    public ResponseEntity<Void> createCar(@Valid @RequestBody CreateCarRequest request) {
+    public ResponseEntity<ResponseDTO> createCar(@Valid @RequestBody CreateCarRequest request) {
         carService.createCar(request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ResponseDTO(HttpStatus.CREATED.value(), "Машина успешно добавлена"));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "обновить данные у машины")
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateCar(@PathVariable UUID id, @Valid @RequestBody UpdateCarRequest request) {
+    public ResponseEntity<ResponseDTO> updateCar(@PathVariable UUID id, @Valid @RequestBody UpdateCarRequest request) {
         carService.updateCar(id, request);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK.value(), "Данные машины успешно обновлены"));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "удалить машину")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCar(@PathVariable UUID id) {
+    public ResponseEntity<ResponseDTO> deleteCar(@PathVariable UUID id) {
         carService.deleteCar(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK.value(), "Машина успешно удалена"));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "изменить статус машины")
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Void> updateCarStatus(@PathVariable UUID id, @Valid @RequestBody UpdateCarStatusRequest request) {
+    public ResponseEntity<ResponseDTO> updateCarStatus(@PathVariable UUID id, @Valid @RequestBody UpdateCarStatusRequest request) {
         carService.updateCarStatus(id, request);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK.value(), "Статус машины успешно изменен"));
     }
 }

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -54,11 +55,26 @@ public class CarService {
     }
 
     @Transactional
-    public Car createCar(CreateCarRequest request) {
+    public void createCar(CreateCarRequest request) {
+        if (request.getCarModel() == null) {
+            throw new IllegalArgumentException("Модель машины не указана");
+        }
+
+        if (request.getCarNumber() == null || request.getCarNumber().isBlank()) {
+            throw new IllegalArgumentException("Номер машины обязателен");
+        }
+
+        if (request.getPricePerDay() == null || request.getPricePerDay().doubleValue() <= 0) {
+            throw new IllegalArgumentException("Цена за день должна быть положительной");
+        }
+
         CarModel model = carModelRepository.findById(request.getCarModel())
-                .orElseThrow(() -> new EntityNotFoundException("модель машины не найдена"));
+                .orElseThrow(() -> new NoSuchElementException("Модель машины не найдена"));
 
         UUID userId = jwtUtils.getCurrentUserId();
+        if (userId == null) {
+            throw new IllegalStateException("Не удалось получить ID текущего пользователя");
+        }
 
         Car car = new Car();
         car.setId(UUID.randomUUID());
@@ -69,37 +85,57 @@ public class CarService {
         car.setStatus(CarStatus.AVAILABLE);
         car.setCreatedBy(userId);
 
-        return carRepository.save(car);
+        carRepository.save(car);
     }
 
     @Transactional
-    public Car updateCar(UUID id, UpdateCarRequest request) {
+    public void updateCar(UUID id, UpdateCarRequest request) {
+        if (id == null) throw new IllegalArgumentException("ID машины не может быть null");
+
         Car car = carRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("машина не найдена!"));
+                .orElseThrow(() -> new NoSuchElementException("Машина не найдена"));
+
+        if (request.getCarNumber() == null || request.getCarNumber().isBlank()) {
+            throw new IllegalArgumentException("Номер машины обязателен");
+        }
+
+        if (request.getPricePerDay() == null || request.getPricePerDay().doubleValue() <= 0) {
+            throw new IllegalArgumentException("Цена за день должна быть положительной");
+        }
 
         CarModel model = carModelRepository.findById(request.getCarModel())
-                .orElseThrow(() -> new EntityNotFoundException("модель машины не найдена!"));
+                .orElseThrow(() -> new NoSuchElementException("Модель машины не найдена"));
 
         car.setCarNumber(request.getCarNumber());
         car.setCarModel(model);
         car.setPricePerDay(request.getPricePerDay());
         car.setDescription(request.getDescription());
 
-        return carRepository.save(car);
+        carRepository.save(car);
     }
 
     @Transactional
     public void deleteCar(UUID id) {
         if (!carRepository.existsById(id)) {
-            throw new EntityNotFoundException("машина не найдена");
+            throw new NoSuchElementException("Машина не найдена");
         }
         carRepository.deleteById(id);
     }
 
     @Transactional
     public void updateCarStatus(UUID id, UpdateCarStatusRequest request) {
+        if (id == null) throw new IllegalArgumentException("ID машины не может быть null");
+
         Car car = carRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("машина не найдена"));
+                .orElseThrow(() -> new NoSuchElementException("Машина не найдена"));
+
+        if (request.getStatus() == null) {
+            throw new IllegalArgumentException("Новый статус не указан");
+        }
+
+        if (car.getStatus() == request.getStatus()) {
+            throw new IllegalStateException("Статус уже установлен: " + request.getStatus());
+        }
 
         car.setStatus(request.getStatus());
         carRepository.save(car);

@@ -1,8 +1,7 @@
-package exeptions;
+package com.example.carservice.exeptions;
 
 import dtos.ErrorValidationResponseDTO;
 import dtos.ResponseDTO;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -15,7 +14,8 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-public class GlobalExeptionsHandler {
+public class GlobalExceptionHandler {
+
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ResponseDTO> handleNotFound(NoSuchElementException ex) {
         ResponseDTO response = new ResponseDTO(

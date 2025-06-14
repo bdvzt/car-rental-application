@@ -3,6 +3,7 @@ package com.example.carservice.controllers;
 import com.example.carservice.dtos.requests.CarModelRequest;
 import com.example.carservice.dtos.responses.CarModelDTO;
 import com.example.carservice.services.CarModelService;
+import dtos.ResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,24 +41,25 @@ public class CarModelController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "создание новой модели машины")
     @PostMapping
-    public ResponseEntity<Void> createCarModel(@Valid @RequestBody CarModelRequest request) {
+    public ResponseEntity<ResponseDTO> createCarModel(@Valid @RequestBody CarModelRequest request) {
         carModelService.createCarModel(request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ResponseDTO(HttpStatus.CREATED.value(), "Модель машины успешно создана"));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "обновление данных модели машины")
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateCarModel(@PathVariable UUID id, @Valid @RequestBody CarModelRequest request) {
+    public ResponseEntity<ResponseDTO> updateCarModel(@PathVariable UUID id, @Valid @RequestBody CarModelRequest request) {
         carModelService.updateCarModel(id, request);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK.value(), "Модель машины успешно обновлена"));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "удаление модели машины")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCarModel(@PathVariable UUID id) {
+    public ResponseEntity<ResponseDTO> deleteCarModel(@PathVariable UUID id) {
         carModelService.deleteCarModel(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK.value(), "Модель машины успешно удалена"));
     }
 }
