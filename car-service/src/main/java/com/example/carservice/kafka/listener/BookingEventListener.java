@@ -1,4 +1,4 @@
-package com.example.carservice.kafka;
+package com.example.carservice.kafka.listener;
 
 import com.example.carservice.entities.Car;
 import com.example.carservice.entities.enums.CarStatus;
@@ -7,7 +7,6 @@ import com.example.carservice.repositories.CarRepository;
 import dtos.kafka.BookingCreatedEvent;
 import dtos.kafka.CarReservedEvent;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 

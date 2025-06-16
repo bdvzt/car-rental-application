@@ -3,20 +3,16 @@ package com.example.bookingservice.services;
 import com.example.bookingservice.dtos.requests.BookingCreateRequest;
 import com.example.bookingservice.entities.Booking;
 import com.example.bookingservice.entities.enums.BookingStatus;
+import com.example.bookingservice.kafka.sender.KafkaSender;
 import com.example.bookingservice.repositories.BookingHistoryRepository;
 import com.example.bookingservice.repositories.BookingRepository;
 import com.example.bookingservice.security.JwtUtils;
 import dtos.kafka.BookingCreatedEvent;
-import dtos.kafka.cars.CarDetailDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,17 +20,17 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class BookingService {
 
-    private final KafkaTemplate<String, BookingCreatedEvent> kafkaTemplate;
-
+    private final KafkaSender kafkaSender;
     private final BookingRepository bookingRepository;
     private final BookingHistoryRepository historyRepository;
     private final JwtUtils jwtUtils;
 
-    private static final Duration WAIT_FOR_PAYING = Duration.ofMinutes(10);
-
     @Transactional
     public UUID createBooking(BookingCreateRequest request) {
-        validateAvailability(request.getCarId(), request.getStartDate(), request.getEndDate());
+        validateAvailability(
+                request.getCarId(),
+                request.getStartDate(),
+                request.getEndDate());
 
         UUID userId = jwtUtils.getCurrentUserId();
 
@@ -43,24 +39,23 @@ public class BookingService {
         booking.setCarId(request.getCarId());
         booking.setStartDate(request.getStartDate());
         booking.setEndDate(request.getEndDate());
-        booking.setStatus(BookingStatus.RESERVED);
+        booking.setStatus(BookingStatus.PENDING);
         booking = bookingRepository.save(booking);
 
         BookingCreatedEvent event = new BookingCreatedEvent(
                 booking.getId(),
-                userId,
                 booking.getCarId(),
                 booking.getStartDate(),
-                booking.getEndDate(),
-                calculatePrice(booking)
+                booking.getEndDate()
         );
-        kafkaTemplate.send("booking.created", event);
+        kafkaSender.sendBookingCreatedEvent(event);
 
         return booking.getId();
     }
 
     public void validateAvailability(UUID carId, LocalDateTime startDate, LocalDateTime endDate) {
         List<Booking> bookings = bookingRepository.findAllByCarId(carId);
+
         boolean overlap = bookings.stream()
                 .filter(b -> b.getStatus() != BookingStatus.CANCELLED && b.getStatus() != BookingStatus.COMPLETED)
                 .anyMatch(b ->
@@ -71,19 +66,6 @@ public class BookingService {
         if (overlap) {
             throw new IllegalStateException("Машина уже забронирована на выбранные даты");
         }
-    }
-
-    private BigDecimal calculatePrice(Booking booking) {
-        CarDetailDTO car = carClient.getCar(booking.getCarId());
-
-        long days = ChronoUnit.DAYS.between(
-                booking.getStartDate().toLocalDate(),
-                booking.getEndDate().toLocalDate()
-        );
-
-        days = Math.max(days, 1);
-
-        return car.getPricePerDay().multiply(BigDecimal.valueOf(days));
     }
 
 //    public void validateAvailability(UUID carId, LocalDateTime start, LocalDateTime end) {

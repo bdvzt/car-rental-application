@@ -1,6 +1,6 @@
-package com.example.carservice.config;
+package com.example.bookingservice.configs;
 
-import dtos.kafka.BookingCreatedEvent;
+import dtos.kafka.CarReservedEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,13 +17,13 @@ import java.util.Map;
 
 @Configuration
 @EnableKafka
-public class KafkaConsumerConfig {
+public class KafkaConcumerConfig {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
     @Bean
-    public ConsumerFactory<String, BookingCreatedEvent> bookingCreatedConsumerFactory() {
+    public ConsumerFactory<String, CarReservedEvent> carReservedConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -36,23 +36,21 @@ public class KafkaConsumerConfig {
                 "com.example.common.dtos.kafka");
         props.put(
                 JsonDeserializer.VALUE_DEFAULT_TYPE,
-                BookingCreatedEvent.class.getName());
-        props.put(
-                JsonDeserializer.USE_TYPE_INFO_HEADERS,
-                false);
+                CarReservedEvent.class.getName());
+        props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
 
         return new DefaultKafkaConsumerFactory<>(
                 props,
                 new StringDeserializer(),
-                new JsonDeserializer<>(BookingCreatedEvent.class)
+                new JsonDeserializer<>(CarReservedEvent.class)
         );
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, BookingCreatedEvent> bookingCreatedListenerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, BookingCreatedEvent> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, CarReservedEvent> carReservedListenerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, CarReservedEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(bookingCreatedConsumerFactory());
+        factory.setConsumerFactory(carReservedConsumerFactory());
         return factory;
     }
 }
