@@ -7,7 +7,7 @@ import com.example.userservice.dtos.responses.TokenRefreshResponse;
 import com.example.userservice.dtos.responses.TokenResponse;
 import com.example.userservice.services.AuthUserService;
 import com.example.userservice.services.RefreshTokenService;
-import dtos.ResponseDTO;
+import dtos.responses.ResponseDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

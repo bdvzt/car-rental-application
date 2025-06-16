@@ -1,4 +1,4 @@
-package com.example.carservice.exeptions;
+package com.example.bookingservice.exeptions;
 
 import dtos.responses.ErrorValidationResponseDTO;
 import dtos.responses.ResponseDTO;
@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ResponseDTO> handleNotFound(NoSuchElementException ex) {
         ResponseDTO response = new ResponseDTO(

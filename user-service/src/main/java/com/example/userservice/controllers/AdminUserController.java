@@ -2,7 +2,7 @@ package com.example.userservice.controllers;
 
 import com.example.userservice.dtos.responses.UserProfileResponse;
 import com.example.userservice.services.AdminUserService;
-import dtos.ResponseDTO;
+import dtos.responses.ResponseDTO;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

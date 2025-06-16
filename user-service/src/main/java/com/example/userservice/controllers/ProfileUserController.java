@@ -2,9 +2,8 @@ package com.example.userservice.controllers;
 
 import com.example.userservice.dtos.requests.UpdateUserProfileRequest;
 import com.example.userservice.dtos.responses.UserProfileResponse;
-import com.example.userservice.security.services.UserDetailsImpl;
 import com.example.userservice.services.ProfileUserService;
-import dtos.ResponseDTO;
+import dtos.responses.ResponseDTO;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

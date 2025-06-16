@@ -12,11 +12,13 @@ import com.example.carservice.mappers.CarMapper;
 import com.example.carservice.repositories.CarModelRepository;
 import com.example.carservice.repositories.CarRepository;
 import com.example.carservice.security.JwtUtils;
+import dtos.kafka.CarReservedEvent;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,6 +29,8 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class CarService {
+
+    private final KafkaTemplate<String, CarReservedEvent> kafkaTemplate;
 
     private final CarRepository carRepository;
     private final CarModelRepository carModelRepository;

@@ -5,7 +5,7 @@ import com.example.userservice.entities.ERole;
 import com.example.userservice.entities.User;
 import com.example.userservice.mappers.UserMapper;
 import com.example.userservice.repositories.UserRepository;
-import dtos.ResponseDTO;
+import dtos.responses.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

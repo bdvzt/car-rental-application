@@ -7,7 +7,7 @@ import com.example.carservice.dtos.responses.CarDetailDTO;
 import com.example.carservice.dtos.responses.CarShortDTO;
 import com.example.carservice.entities.enums.CarStatus;
 import com.example.carservice.services.CarService;
-import dtos.ResponseDTO;
+import dtos.responses.ResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;

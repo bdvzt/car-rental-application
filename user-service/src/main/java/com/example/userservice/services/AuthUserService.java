@@ -12,7 +12,7 @@ import com.example.userservice.repositories.RoleRepository;
 import com.example.userservice.repositories.UserRepository;
 import com.example.userservice.security.jwt.services.JwtUtils;
 import com.example.userservice.security.services.UserDetailsImpl;
-import dtos.ResponseDTO;
+import dtos.responses.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

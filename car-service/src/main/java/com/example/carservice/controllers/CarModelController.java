@@ -3,7 +3,7 @@ package com.example.carservice.controllers;
 import com.example.carservice.dtos.requests.CarModelRequest;
 import com.example.carservice.dtos.responses.CarModelDTO;
 import com.example.carservice.services.CarModelService;
-import dtos.ResponseDTO;
+import dtos.responses.ResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
