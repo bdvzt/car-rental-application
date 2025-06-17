@@ -11,7 +11,4 @@ public class BookingCancelRequest {
 
     @NotNull(message = "id брони обязателен")
     private UUID bookingId;
-
-    @Size(max = 1000)
-    private String reason;
 }

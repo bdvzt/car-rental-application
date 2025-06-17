@@ -1,16 +1,17 @@
 package com.example.bookingservice.dtos.responses;
 
+import com.example.bookingservice.entities.enums.BookingStatus;
+import lombok.Builder;
 import lombok.Data;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
+@Builder
 public class BookingHistoryResponse {
-
-    private List<BookingResponse> bookings;
-
-    private int page;
-    private int size;
-    private long totalElements;
+    private UUID id;
+    private UUID bookingId;
+    private BookingStatus status;
+    private LocalDateTime changedAt;
 }
-
