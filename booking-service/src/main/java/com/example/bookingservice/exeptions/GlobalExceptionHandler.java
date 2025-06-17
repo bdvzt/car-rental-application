@@ -66,11 +66,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ResponseDTO> handleAll(Exception ex) {
-        ResponseDTO response = new ResponseDTO(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Internal server error"
-        );
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<String> handleAll(Exception ex) {
+        ex.printStackTrace();
+        return ResponseEntity.status(500).body("Internal error: " + ex.getMessage());
     }
 }

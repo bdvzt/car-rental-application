@@ -13,12 +13,4 @@ public class BookingCreateRequest {
 
     @NotNull(message = "id машины обязателен")
     private UUID carId;
-
-    @NotNull(message = "Дата начала аренды обязательна")
-    @FutureOrPresent(message = "Дата начала не может быть в прошлом")
-    private LocalDateTime startDate;
-
-    @NotNull(message = "Дата окончания аренды обязательна")
-    @Future(message = "Дата окончания должна быть в будущем")
-    private LocalDateTime endDate;
 }

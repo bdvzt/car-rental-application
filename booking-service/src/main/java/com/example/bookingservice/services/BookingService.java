@@ -12,8 +12,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -27,45 +25,21 @@ public class BookingService {
 
     @Transactional
     public UUID createBooking(BookingCreateRequest request) {
-        validateAvailability(
-                request.getCarId(),
-                request.getStartDate(),
-                request.getEndDate());
-
         UUID userId = jwtUtils.getCurrentUserId();
 
         Booking booking = new Booking();
         booking.setUserId(userId);
         booking.setCarId(request.getCarId());
-        booking.setStartDate(request.getStartDate());
-        booking.setEndDate(request.getEndDate());
         booking.setStatus(BookingStatus.PENDING);
         booking = bookingRepository.save(booking);
 
         BookingCreatedEvent event = new BookingCreatedEvent(
                 booking.getId(),
-                booking.getCarId(),
-                booking.getStartDate(),
-                booking.getEndDate()
+                booking.getCarId()
         );
         kafkaSender.sendBookingCreatedEvent(event);
 
         return booking.getId();
-    }
-
-    public void validateAvailability(UUID carId, LocalDateTime startDate, LocalDateTime endDate) {
-        List<Booking> bookings = bookingRepository.findAllByCarId(carId);
-
-        boolean overlap = bookings.stream()
-                .filter(b -> b.getStatus() != BookingStatus.CANCELLED && b.getStatus() != BookingStatus.COMPLETED)
-                .anyMatch(b ->
-                        !b.getEndDate().isBefore(startDate) &&
-                                !b.getStartDate().isAfter(endDate)
-                );
-
-        if (overlap) {
-            throw new IllegalStateException("Машина уже забронирована на выбранные даты");
-        }
     }
 
 //    public void validateAvailability(UUID carId, LocalDateTime start, LocalDateTime end) {

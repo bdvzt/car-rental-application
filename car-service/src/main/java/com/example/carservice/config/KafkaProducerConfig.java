@@ -1,9 +1,8 @@
 package com.example.carservice.config;
 
-import com.fasterxml.jackson.databind.ser.std.StringSerializer;
-import dtos.kafka.BookingCreatedEvent;
 import dtos.kafka.CarReservedEvent;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
@@ -35,8 +34,9 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, CarReservedEvent> carKafkaTemplate() {
-        return new KafkaTemplate<>(carProducerFactory());
+    public KafkaTemplate<String, CarReservedEvent> carKafkaTemplate(
+            ProducerFactory<String, CarReservedEvent> factory) {
+        return new KafkaTemplate<>(factory);
     }
 }
 

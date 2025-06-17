@@ -28,12 +28,6 @@ public class Booking {
     @Column(name = "car_id", nullable = false)
     private UUID carId;
 
-    @Column(name = "start_date", nullable = false)
-    private LocalDateTime startDate;
-
-    @Column(name = "end_date", nullable = false)
-    private LocalDateTime endDate;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private BookingStatus status;

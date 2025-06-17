@@ -43,14 +43,23 @@ public class BookingEventListener {
         }
 
         Car car = optionalCar.get();
-// TODO: - ПОМЕНЯТЬ ЛОГИКУ ПРОВЕРКИ БРОНИРОВАНИЯ, СДЕЛАТЬ ПРОВЕРКУ БРОНИРОВАНИЯ НА ДАТЫ, А НЕ ПРОСТО ПО СТАТУСУ
-        if (car.getStatus() != CarStatus.AVAILABLE) {
+
+        if (car.getStatus() == CarStatus.BOOKED) {
             kafkaCarSender.sendCarReservedEvent(new CarReservedEvent(
                     bookingId,
                     carId,
                     car.getPricePerDay(),
                     false,
                     "Машина уже забронирована"
+            ));
+            return;
+        } else if (car.getStatus() == CarStatus.UNDER_REPAIR) {
+            kafkaCarSender.sendCarReservedEvent(new CarReservedEvent(
+                    bookingId,
+                    carId,
+                    null,
+                    false,
+                    "Машина в ремонте"
             ));
             return;
         }

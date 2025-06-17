@@ -67,6 +67,7 @@ public class JwtUtils {
 
         return Jwts.builder()
                 .setSubject(user.getEmail())
+                .claim("id", user.getId().toString())
                 .claim("roles", roles)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + Duration.ofMinutes(jwtProperties.getLifetimeMinutes()).toMillis()))

@@ -24,7 +24,7 @@ public class KafkaProducerConfig {
                 "localhost:9092");
         configProps.put(
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
-                StringSerializer.class);
+                org.apache.kafka.common.serialization.StringSerializer.class);
         configProps.put(
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
                 JsonSerializer.class);
@@ -34,7 +34,8 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, BookingCreatedEvent> bookingKafkaTemplate() {
-        return new KafkaTemplate<>(bookingProducerFactory());
+    public KafkaTemplate<String, BookingCreatedEvent> bookingKafkaTemplate(
+            ProducerFactory<String, BookingCreatedEvent> factory) {
+        return new KafkaTemplate<>(factory);
     }
 }
