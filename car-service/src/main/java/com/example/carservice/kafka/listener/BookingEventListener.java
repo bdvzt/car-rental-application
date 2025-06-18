@@ -22,7 +22,6 @@ public class BookingEventListener {
 
     @KafkaListener(
             topics = "booking-event",
-            groupId = "car-group",
             containerFactory = "bookingListenerFactory"
     )
     public void handleBookingCreated(BookingEvent event) {

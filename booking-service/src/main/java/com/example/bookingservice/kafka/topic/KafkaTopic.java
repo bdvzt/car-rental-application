@@ -19,4 +19,9 @@ public class KafkaTopic {
     public NewTopic bookingCompletedTopic() {
         return TopicBuilder.name("booking-completed-event").build();
     }
+
+    @Bean
+    public NewTopic payingCompletedTopic() {
+        return TopicBuilder.name("paying-event").build();
+    }
 }

@@ -1,6 +1,7 @@
-package com.example.bookingservice.configs;
+package com.example.paymentservice.config;
 
 import dtos.kafka.CarEvent;
+import dtos.kafka.PaymentEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,40 +18,40 @@ import java.util.Map;
 
 @Configuration
 @EnableKafka
-public class KafkaConcumerConfig {
+public class KafkaConsumerConfig {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
     @Bean
-    public ConsumerFactory<String, CarEvent> carConsumerFactory() {
+    public ConsumerFactory<String, PaymentEvent> payConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
                 bootstrapServers);
         props.put(
                 ConsumerConfig.GROUP_ID_CONFIG,
-                "booking-group");
+                "paying-group");
         props.put(
                 JsonDeserializer.TRUSTED_PACKAGES,
                 "com.example.common.dtos.kafka");
         props.put(
                 JsonDeserializer.VALUE_DEFAULT_TYPE,
-                CarEvent.class.getName());
+                PaymentEvent.class.getName());
         props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
 
         return new DefaultKafkaConsumerFactory<>(
                 props,
                 new StringDeserializer(),
-                new JsonDeserializer<>(CarEvent.class)
+                new JsonDeserializer<>(PaymentEvent.class)
         );
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, CarEvent> carListenerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, CarEvent> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, PaymentEvent> payListenerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, PaymentEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(carConsumerFactory());
+        factory.setConsumerFactory(payConsumerFactory());
         return factory;
     }
 }

@@ -21,7 +21,6 @@ public class BookingKafkaListener {
 
     @KafkaListener(
             topics = "car-reserved-event",
-            groupId = "booking-group",
             containerFactory = "carListenerFactory"
     )
     public void handleCarReservedEvent(CarEvent event) {
@@ -50,7 +49,6 @@ public class BookingKafkaListener {
 
     @KafkaListener(
             topics = "car-freed-event",
-            groupId = "booking-group",
             containerFactory = "carListenerFactory"
     )
     public void handleCarFreedEvent(CarEvent event) {
