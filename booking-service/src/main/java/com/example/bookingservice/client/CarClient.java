@@ -3,6 +3,7 @@ package com.example.bookingservice.client;
 import dtos.responses.CarDetailDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -21,7 +22,8 @@ public class CarClient {
     private final RestTemplate restTemplate;
     private final HttpServletRequest request;
 
-    private final String carServiceBaseUrl = "http://localhost:8082";
+    @Value("${car-service.url}")
+    private String carServiceBaseUrl;
 
     public CarDetailDTO getCarById(UUID carId) {
         try {
