@@ -2,9 +2,11 @@ package com.example.bookingservice.kafka.listener;
 
 import com.example.bookingservice.entities.Booking;
 import com.example.bookingservice.entities.enums.BookingStatus;
+import com.example.bookingservice.kafka.sender.KafkaSender;
 import com.example.bookingservice.repositories.BookingRepository;
 import com.example.bookingservice.services.BookingHistoryService;
 import dtos.kafka.CarEvent;
+import dtos.kafka.PaymentEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,8 @@ public class BookingKafkaListener {
 
     private final BookingRepository bookingRepository;
     private final BookingHistoryService historyService;
+
+    private final KafkaSender kafkaSender;
 
     @KafkaListener(
             topics = "car-reserved-event",
@@ -45,6 +49,12 @@ public class BookingKafkaListener {
         booking.setStatus(BookingStatus.RESERVED);
         bookingRepository.save(booking);
         historyService.saveStatusChange(bookingId, BookingStatus.RESERVED);
+
+        kafkaSender.sendPayingEvent(new PaymentEvent(
+                booking.getId(),
+                booking.getUserId(),
+                booking.getPrice()
+        ));
     }
 
     @KafkaListener(
