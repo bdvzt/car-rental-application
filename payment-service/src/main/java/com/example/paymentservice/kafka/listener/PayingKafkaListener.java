@@ -6,12 +6,14 @@ import com.example.paymentservice.repositories.PaymentRepository;
 import dtos.kafka.CarEvent;
 import dtos.kafka.PaymentEvent;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class PayingKafkaListener {
@@ -34,6 +36,8 @@ public class PayingKafkaListener {
         );
 
         paymentRepository.save(payment);
+        log.info("Создан новый платёж: bookingId={}, userId={}, статус={}",
+                event.getBookingId(), event.getUserId(), PaymentStatus.NEW);
     }
 
     @KafkaListener(
@@ -44,6 +48,7 @@ public class PayingKafkaListener {
         Optional<Payment> optionalPayment = paymentRepository.findByBookingId(event.getBookingId());
 
         if (optionalPayment.isEmpty()) {
+            log.warn("Платёж для отмены не найден: bookingId={}", event.getBookingId());
             return;
         }
 
@@ -51,6 +56,9 @@ public class PayingKafkaListener {
         if (payment.getPaymentStatus() == PaymentStatus.NEW) {
             payment.setPaymentStatus(PaymentStatus.CANCELLED);
             paymentRepository.save(payment);
+            log.info("Платёж отменён: bookingId={}, статус={}", event.getBookingId(), PaymentStatus.CANCELLED);
+        } else {
+            log.info("Платёж не может быть отменён, так как его статус = {}", payment.getPaymentStatus());
         }
     }
 }
