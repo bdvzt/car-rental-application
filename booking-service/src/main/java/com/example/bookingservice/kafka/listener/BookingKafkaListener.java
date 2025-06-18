@@ -75,4 +75,23 @@ public class BookingKafkaListener {
             historyService.saveStatusChange(bookingId, BookingStatus.COMPLETED);
         }
     }
+
+    @KafkaListener(
+            topics = "payment-success-event",
+            containerFactory = "paymentListenerFactory"
+    )
+    public void handlePaymentSuccessEvent(PaymentEvent event) {
+        UUID bookingId = event.getBookingId();
+
+        Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
+        if (optionalBooking.isEmpty()) return;
+
+        Booking booking = optionalBooking.get();
+
+        if (booking.getStatus() != BookingStatus.RESERVED) return;
+
+        booking.setStatus(BookingStatus.PAID);
+        bookingRepository.save(booking);
+        historyService.saveStatusChange(bookingId, BookingStatus.PAID);
+    }
 }

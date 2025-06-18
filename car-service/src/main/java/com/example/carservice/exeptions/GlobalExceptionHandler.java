@@ -63,7 +63,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ResponseDTO> handleIllegalState(IllegalStateException ex) {
         return new ResponseEntity<>(new ResponseDTO(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+                HttpStatus.CONFLICT.value(), ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(Exception.class)
