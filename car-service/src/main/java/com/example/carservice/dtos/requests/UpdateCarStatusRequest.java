@@ -1,6 +1,6 @@
 package com.example.carservice.dtos.requests;
 
-import com.example.carservice.entities.enums.CarStatus;
+import dtos.responses.CarStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 

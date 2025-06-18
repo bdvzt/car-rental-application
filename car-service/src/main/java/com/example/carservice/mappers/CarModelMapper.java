@@ -1,9 +1,8 @@
 package com.example.carservice.mappers;
 
 import com.example.carservice.dtos.requests.CarModelRequest;
-import com.example.carservice.dtos.responses.CarModelDTO;
+import dtos.responses.CarModelDTO;
 import com.example.carservice.entities.CarModel;
-import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;

@@ -3,11 +3,11 @@ package com.example.carservice.services;
 import com.example.carservice.dtos.requests.CreateCarRequest;
 import com.example.carservice.dtos.requests.UpdateCarRequest;
 import com.example.carservice.dtos.requests.UpdateCarStatusRequest;
-import com.example.carservice.dtos.responses.CarDetailDTO;
+import dtos.responses.CarDetailDTO;
 import com.example.carservice.dtos.responses.CarShortDTO;
 import com.example.carservice.entities.Car;
 import com.example.carservice.entities.CarModel;
-import com.example.carservice.entities.enums.CarStatus;
+import dtos.responses.CarStatus;
 import com.example.carservice.mappers.CarMapper;
 import com.example.carservice.repositories.CarModelRepository;
 import com.example.carservice.repositories.CarRepository;
@@ -51,7 +51,7 @@ public class CarService {
 
     public CarDetailDTO getCarDetails(UUID carId) {
         Car car = carRepository.findById(carId)
-                .orElseThrow(() -> new EntityNotFoundException("машина не найдена:("));
+                .orElseThrow(() -> new NoSuchElementException("машина не найдена:("));
         return carMapper.toDetailDto(car);
     }
 

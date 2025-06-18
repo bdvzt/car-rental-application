@@ -1,7 +1,6 @@
 package com.example.carservice.mappers;
 
-import com.example.carservice.dtos.responses.CarDetailDTO;
-import com.example.carservice.dtos.responses.CarModelDTO;
+import dtos.responses.CarDetailDTO;
 import com.example.carservice.dtos.responses.CarShortDTO;
 import com.example.carservice.entities.Car;
 import lombok.RequiredArgsConstructor;

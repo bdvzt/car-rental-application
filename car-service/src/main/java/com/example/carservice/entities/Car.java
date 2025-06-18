@@ -1,6 +1,6 @@
 package com.example.carservice.entities;
 
-import com.example.carservice.entities.enums.CarStatus;
+import dtos.responses.CarStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;

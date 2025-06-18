@@ -1,6 +1,5 @@
-package com.example.carservice.dtos.responses;
+package dtos.responses;
 
-import com.example.carservice.entities.enums.CarStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

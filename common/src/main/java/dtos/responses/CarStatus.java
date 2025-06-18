@@ -1,4 +1,4 @@
-package com.example.carservice.entities.enums;
+package dtos.responses;
 
 public enum CarStatus {
     AVAILABLE,

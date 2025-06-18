@@ -1,7 +1,7 @@
 package com.example.carservice.kafka.listener;
 
 import com.example.carservice.entities.Car;
-import com.example.carservice.entities.enums.CarStatus;
+import dtos.responses.CarStatus;
 import com.example.carservice.kafka.sender.KafkaCarSender;
 import com.example.carservice.repositories.CarRepository;
 import dtos.kafka.BookingEvent;

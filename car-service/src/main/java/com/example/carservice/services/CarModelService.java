@@ -1,19 +1,16 @@
 package com.example.carservice.services;
 
 import com.example.carservice.dtos.requests.CarModelRequest;
-import com.example.carservice.dtos.requests.CarModelRequest;
-import com.example.carservice.dtos.responses.CarModelDTO;
+import dtos.responses.CarModelDTO;
 import com.example.carservice.entities.CarModel;
 import com.example.carservice.mappers.CarModelMapper;
 import com.example.carservice.repositories.CarModelRepository;
 import com.example.carservice.security.JwtUtils;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;

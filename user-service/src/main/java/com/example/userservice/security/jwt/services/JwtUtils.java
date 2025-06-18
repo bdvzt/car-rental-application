@@ -42,8 +42,6 @@ public class JwtUtils {
                 .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
 
-        logger.info("Generated JWT Token: {}", token);
-
         return token;
     }
 

@@ -1,5 +1,6 @@
 package com.example.bookingservice.services;
 
+import com.example.bookingservice.client.CarClient;
 import com.example.bookingservice.dtos.requests.BookingCompleteRequest;
 import com.example.bookingservice.dtos.requests.BookingCreateRequest;
 import com.example.bookingservice.entities.Booking;
@@ -8,6 +9,8 @@ import com.example.bookingservice.kafka.sender.KafkaSender;
 import com.example.bookingservice.repositories.BookingRepository;
 import com.example.bookingservice.security.JwtUtils;
 import dtos.kafka.BookingEvent;
+import dtos.responses.CarDetailDTO;
+import dtos.responses.CarStatus;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,7 @@ public class BookingService {
     private final KafkaSender kafkaSender;
     private final BookingRepository bookingRepository;
     private final JwtUtils jwtUtils;
+    private final CarClient carClient;
 
     @Transactional
     public UUID createBooking(BookingCreateRequest request) {
@@ -29,10 +33,20 @@ public class BookingService {
 
         boolean isBooked = bookingRepository.findAllByCarId(request.getCarId())
                 .stream()
-                .anyMatch(b -> b.getStatus() == BookingStatus.RESERVED || b.getStatus() == BookingStatus.PAID);
+                .anyMatch(b -> b.getStatus() == BookingStatus.RESERVED
+                        || b.getStatus() == BookingStatus.PAID);
 
         if (isBooked) {
             throw new IllegalStateException("Машина уже забронирована");
+        }
+
+        CarDetailDTO car = carClient.getCarById(request.getCarId());
+
+        if (car.getStatus() == CarStatus.BOOKED) {
+            throw new IllegalStateException("Машина уже забронирована");
+        }
+        if (car.getStatus() == CarStatus.UNDER_REPAIR) {
+            throw new IllegalStateException("Машина находится в ремонте");
         }
 
         Booking booking = new Booking();
