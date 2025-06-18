@@ -36,6 +36,21 @@ public class GatewayRoutesConfig {
                                 .stripPrefix(0)
                         )
                         .uri("http://localhost:8082"))
+                .route("booking-service", r -> r
+                        .path("/bookings",
+                                "/bookings/**")
+                        .filters(f -> f
+                                .filter(jwtAuthenticationFilter)
+                                .stripPrefix(0)
+                        )
+                        .uri("http://localhost:8083"))
+                .route("payment-service", r -> r
+                        .path("/payment/**")
+                        .filters(f -> f
+                                .filter(jwtAuthenticationFilter)
+                                .stripPrefix(0)
+                        )
+                        .uri("http://localhost:8084"))
                 .build();
     }
 }
