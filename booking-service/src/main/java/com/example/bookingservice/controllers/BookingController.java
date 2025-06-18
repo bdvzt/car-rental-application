@@ -34,6 +34,7 @@ public class BookingController {
                 .body(new ResponseDTO(HttpStatus.CREATED.value(), "Бронирование успешно создано. ID: " + bookingId));
     }
 
+
     @Operation(summary = "Завершение аренды")
     @PostMapping("/complete")
     public ResponseEntity<ResponseDTO> completeBooking(@RequestBody BookingCompleteRequest request) {
