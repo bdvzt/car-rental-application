@@ -26,4 +26,8 @@ public class KafkaSender {
     public void sendPayingEvent(PaymentEvent event) {
         kafkaTemplatePayment.send("paying-event", event);
     }
+
+    public void sendCancelPayingEvent(PaymentEvent event) {
+        kafkaTemplatePayment.send("cancel-paying-event", event);
+    }
 }

@@ -24,4 +24,9 @@ public class KafkaTopic {
     public NewTopic paymentCreatedTopic() {
         return TopicBuilder.name("paying-event").build();
     }
+
+    @Bean
+    public NewTopic paymentCancelledTopic() {
+        return TopicBuilder.name("cancel-paying-event").build();
+    }
 }

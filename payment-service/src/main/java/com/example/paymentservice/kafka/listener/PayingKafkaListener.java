@@ -20,7 +20,6 @@ public class PayingKafkaListener {
 
     @KafkaListener(
             topics = "paying-event",
-            groupId = "paying-group",
             containerFactory = "payListenerFactory"
     )
     public void handlePaymentEvent(PaymentEvent event) {
@@ -35,5 +34,23 @@ public class PayingKafkaListener {
         );
 
         paymentRepository.save(payment);
+    }
+
+    @KafkaListener(
+            topics = "cancel-paying-event",
+            containerFactory = "payListenerFactory"
+    )
+    public void handleCancelPaymentEvent(PaymentEvent event) {
+        Optional<Payment> optionalPayment = paymentRepository.findByBookingId(event.getBookingId());
+
+        if (optionalPayment.isEmpty()) {
+            return;
+        }
+
+        Payment payment = optionalPayment.get();
+        if (payment.getPaymentStatus() == PaymentStatus.NEW) {
+            payment.setPaymentStatus(PaymentStatus.CANCELLED);
+            paymentRepository.save(payment);
+        }
     }
 }

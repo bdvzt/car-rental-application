@@ -5,6 +5,7 @@ import com.example.bookingservice.entities.enums.BookingStatus;
 import com.example.bookingservice.kafka.sender.KafkaSender;
 import com.example.bookingservice.repositories.BookingRepository;
 import dtos.kafka.BookingEvent;
+import dtos.kafka.PaymentEvent;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -37,6 +38,12 @@ public class CancelBookingService {
             kafkaSender.sendBookingCompletedEvent(new BookingEvent(
                     booking.getId(),
                     booking.getCarId()
+            ));
+
+            kafkaSender.sendCancelPayingEvent(new PaymentEvent(
+                    booking.getId(),
+                    booking.getUserId(),
+                    booking.getPrice()
             ));
         }
     }
