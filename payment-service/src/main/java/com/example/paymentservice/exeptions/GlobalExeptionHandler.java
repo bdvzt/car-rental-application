@@ -4,6 +4,7 @@ import dtos.responses.ErrorValidationResponseDTO;
 import dtos.responses.ResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,6 +32,12 @@ public class GlobalExeptionHandler {
                 ex.getMessage()
         );
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ResponseDTO> handleAccessDenied(AccessDeniedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new ResponseDTO(HttpStatus.FORBIDDEN.value(), "Доступ запрещён"));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

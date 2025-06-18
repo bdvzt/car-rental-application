@@ -10,7 +10,5 @@ import java.util.UUID;
 
 public interface CarRepository extends JpaRepository<Car, UUID> {
 
-    Optional<Car> findByCarNumber(String carNumber);
     List<Car> findByStatus(CarStatus status);
-    boolean existsByCarNumber(String carNumber);
 }
