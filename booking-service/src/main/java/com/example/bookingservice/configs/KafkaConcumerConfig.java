@@ -1,6 +1,6 @@
 package com.example.bookingservice.configs;
 
-import dtos.kafka.CarReservedEvent;
+import dtos.kafka.CarEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +23,7 @@ public class KafkaConcumerConfig {
     private String bootstrapServers;
 
     @Bean
-    public ConsumerFactory<String, CarReservedEvent> carReservedConsumerFactory() {
+    public ConsumerFactory<String, CarEvent> carConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -36,21 +36,21 @@ public class KafkaConcumerConfig {
                 "com.example.common.dtos.kafka");
         props.put(
                 JsonDeserializer.VALUE_DEFAULT_TYPE,
-                CarReservedEvent.class.getName());
+                CarEvent.class.getName());
         props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
 
         return new DefaultKafkaConsumerFactory<>(
                 props,
                 new StringDeserializer(),
-                new JsonDeserializer<>(CarReservedEvent.class)
+                new JsonDeserializer<>(CarEvent.class)
         );
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, CarReservedEvent> carReservedListenerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, CarReservedEvent> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, CarEvent> carListenerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, CarEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(carReservedConsumerFactory());
+        factory.setConsumerFactory(carConsumerFactory());
         return factory;
     }
 }

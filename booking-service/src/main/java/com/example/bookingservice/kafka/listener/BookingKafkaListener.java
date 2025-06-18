@@ -4,7 +4,7 @@ import com.example.bookingservice.entities.Booking;
 import com.example.bookingservice.entities.enums.BookingStatus;
 import com.example.bookingservice.repositories.BookingRepository;
 import com.example.bookingservice.services.BookingHistoryService;
-import dtos.kafka.CarReservedEvent;
+import dtos.kafka.CarEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -22,9 +22,9 @@ public class BookingKafkaListener {
     @KafkaListener(
             topics = "car-reserved-event",
             groupId = "booking-group",
-            containerFactory = "carReservedListenerFactory"
+            containerFactory = "carListenerFactory"
     )
-    public void handleCarReservedEvent(CarReservedEvent event) {
+    public void handleCarReservedEvent(CarEvent event) {
         UUID bookingId = event.getBookingId();
 
         Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
@@ -46,5 +46,25 @@ public class BookingKafkaListener {
         booking.setStatus(BookingStatus.RESERVED);
         bookingRepository.save(booking);
         historyService.saveStatusChange(bookingId, BookingStatus.RESERVED);
+    }
+
+    @KafkaListener(
+            topics = "car-freed-event",
+            groupId = "booking-group",
+            containerFactory = "carListenerFactory"
+    )
+    public void handleCarFreedEvent(CarEvent event) {
+        UUID bookingId = event.getBookingId();
+
+        Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
+        if (optionalBooking.isEmpty()) return;
+
+        Booking booking = optionalBooking.get();
+
+        if (event.isSuccess()) {
+            booking.setStatus(BookingStatus.COMPLETED);
+            bookingRepository.save(booking);
+            historyService.saveStatusChange(bookingId, BookingStatus.COMPLETED);
+        }
     }
 }

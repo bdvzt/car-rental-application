@@ -10,11 +10,13 @@ import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class KafkaTopic {
 
-    private static final Logger logger = LoggerFactory.getLogger(KafkaTopic.class);
-
     @Bean
     public NewTopic bookingTopic() {
-        logger.info("Создание Kafka топика: booking-event");
         return TopicBuilder.name("booking-event").build();
+    }
+
+    @Bean
+    public NewTopic bookingCompletedTopic() {
+        return TopicBuilder.name("booking-completed-event").build();
     }
 }

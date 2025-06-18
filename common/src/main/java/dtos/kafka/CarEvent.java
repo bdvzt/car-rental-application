@@ -10,7 +10,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CarReservedEvent {
+public class CarEvent {
     private UUID bookingId;
     private UUID carId;
     private BigDecimal pricePerDay;

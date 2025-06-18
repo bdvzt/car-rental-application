@@ -1,6 +1,6 @@
 package com.example.carservice.config;
 
-import dtos.kafka.CarReservedEvent;
+import dtos.kafka.CarEvent;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +17,7 @@ import java.util.Map;
 public class KafkaProducerConfig {
 
     @Bean
-    public ProducerFactory<String, CarReservedEvent> carProducerFactory() {
+    public ProducerFactory<String, CarEvent> carProducerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -34,8 +34,8 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, CarReservedEvent> carKafkaTemplate(
-            ProducerFactory<String, CarReservedEvent> factory) {
+    public KafkaTemplate<String, CarEvent> carKafkaTemplate(
+            ProducerFactory<String, CarEvent> factory) {
         return new KafkaTemplate<>(factory);
     }
 }

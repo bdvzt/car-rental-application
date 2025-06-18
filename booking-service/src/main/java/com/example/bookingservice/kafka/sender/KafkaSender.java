@@ -1,6 +1,6 @@
 package com.example.bookingservice.kafka.sender;
 
-import dtos.kafka.BookingCreatedEvent;
+import dtos.kafka.BookingEvent;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,25 +11,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class KafkaSender {
 
-    private static final Logger logger = LoggerFactory.getLogger(KafkaSender.class);
+    private final KafkaTemplate<String, BookingEvent> kafkaTemplate;
 
-    private final KafkaTemplate<String, BookingCreatedEvent> kafkaTemplate;
+    public void sendBookingCreatedEvent(BookingEvent event) {
+        sendEvent("booking-event", event);
+    }
 
-    public void sendBookingCreatedEvent(BookingCreatedEvent bookingCreatedEvent) {
-        logger.info("Подготовка к отправке события BookingCreatedEvent: {}", bookingCreatedEvent);
+    public void sendBookingCompletedEvent(BookingEvent event) {
+        sendEvent("booking-completed-event", event);
+    }
 
-        kafkaTemplate.send("booking-event", bookingCreatedEvent)
-                .whenComplete((result, ex) -> {
-                    if (ex != null) {
-                        logger.error("Ошибка при отправке события BookingCreatedEvent в Kafka", ex);
-                    } else if (result != null) {
-                        logger.info("Событие успешно отправлено в Kafka. Topic: {}, Partition: {}, Offset: {}",
-                                result.getRecordMetadata().topic(),
-                                result.getRecordMetadata().partition(),
-                                result.getRecordMetadata().offset());
-                    } else {
-                        logger.warn("Kafka send result is null");
-                    }
-                });
+    private void sendEvent(String topic, BookingEvent event) {
+        kafkaTemplate.send(topic, event);
     }
 }

@@ -9,7 +9,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookingCreatedEvent {
+public class BookingEvent {
     private UUID bookingId;
     private UUID carId;
 }

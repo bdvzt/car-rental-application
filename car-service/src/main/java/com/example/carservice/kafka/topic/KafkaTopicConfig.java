@@ -12,4 +12,9 @@ public class KafkaTopicConfig {
     public NewTopic carReservedTopic() {
         return TopicBuilder.name("car-reserved-event").build();
     }
+
+    @Bean
+    public NewTopic carFreedTopic() {
+        return TopicBuilder.name("car-freed-event").build();
+    }
 }

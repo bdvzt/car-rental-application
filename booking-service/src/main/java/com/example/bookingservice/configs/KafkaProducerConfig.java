@@ -1,7 +1,6 @@
 package com.example.bookingservice.configs;
 
-import com.fasterxml.jackson.databind.ser.std.StringSerializer;
-import dtos.kafka.BookingCreatedEvent;
+import dtos.kafka.BookingEvent;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +16,7 @@ import java.util.Map;
 public class KafkaProducerConfig {
 
     @Bean
-    public ProducerFactory<String, BookingCreatedEvent> bookingProducerFactory() {
+    public ProducerFactory<String, BookingEvent> bookingProducerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -34,8 +33,8 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, BookingCreatedEvent> bookingKafkaTemplate(
-            ProducerFactory<String, BookingCreatedEvent> factory) {
+    public KafkaTemplate<String, BookingEvent> bookingKafkaTemplate(
+            ProducerFactory<String, BookingEvent> factory) {
         return new KafkaTemplate<>(factory);
     }
 }
