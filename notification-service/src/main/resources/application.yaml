@@ -18,23 +18,7 @@ spring:
           ssl:
             enable: true
 
-#  mail:
-#    host: smtp.yandex.ru
-#    port: 465
-#    username: missjava@yandex.ru
-#    password: vvmggloczjendqko
-#    protocol: smtps
-#    properties:
-#      mail:
-#        smtp:
-#          auth: true
-#          ssl:
-#            enable: true
-
   kafka:
     admin:
       auto-create: true
     bootstrap-servers: localhost:9092
-
-#  c0ryfMo4XlR1lGAy414g - mail.ru
-#  vvmggloczjendqko - yandex.ru
