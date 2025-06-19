@@ -7,15 +7,22 @@ spring:
 
   mail:
     host: smtp.yandex.ru
-    port: 465
+    port: 587
     username: missjava@yandex.ru
-    password: vzsvwskdvhpnlxan
+    password: utwbtqwafonxuvry
+    protocol: smtp
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
+            required: true
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
+
+  kafka:
+    admin:
+      auto-create: true
+    bootstrap-servers: localhost:9092
