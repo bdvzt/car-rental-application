@@ -2,6 +2,9 @@ package com.example.userservice.controllers;
 
 import com.example.userservice.dtos.requests.UpdateUserProfileRequest;
 import com.example.userservice.dtos.responses.UserProfileResponse;
+import com.example.userservice.security.services.UserDetailsImpl;
+import com.example.userservice.services.AdminUserService;
+import com.example.userservice.services.AuthUserService;
 import com.example.userservice.services.ProfileUserService;
 import dtos.responses.ResponseDTO;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -10,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProfileUserController {
 
     private final ProfileUserService profileUserService;
+    private final AuthUserService authUserService;
 
     @GetMapping
     public ResponseEntity<UserProfileResponse> getProfile(Authentication authentication) {
@@ -39,5 +44,11 @@ public class ProfileUserController {
     public ResponseEntity<ResponseDTO> deactivateProfile(Authentication authentication) {
         profileUserService.deactivateProfile(authentication);
         return ResponseEntity.ok(new ResponseDTO(200, "Профиль успешно деактивирован"));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        authUserService.logout(userDetails.getId());
+        return ResponseEntity.ok(new ResponseDTO(200, "Вы успешно вышли из системы"));
     }
 }
