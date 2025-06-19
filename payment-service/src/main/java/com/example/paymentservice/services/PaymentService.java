@@ -55,6 +55,7 @@ public class PaymentService {
 
         kafkaSender.sendPaymentSuccessEvent(new PaymentEvent(
                 payment.getBookingId(),
+                payment.getId(),
                 payment.getUserId(),
                 payment.getPrice()
         ));

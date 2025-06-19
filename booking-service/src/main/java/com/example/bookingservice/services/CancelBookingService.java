@@ -42,6 +42,7 @@ public class CancelBookingService {
 
             kafkaSender.sendCancelPayingEvent(new PaymentEvent(
                     booking.getId(),
+                    booking.getPaymentId(),
                     booking.getUserId(),
                     booking.getPrice()
             ));
