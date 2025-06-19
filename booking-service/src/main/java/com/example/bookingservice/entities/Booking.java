@@ -28,6 +28,9 @@ public class Booking {
     @Column(name = "car_id", nullable = false)
     private UUID carId;
 
+    @Column(name = "payment_id", nullable = false)
+    private UUID paymentId;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private BookingStatus status;

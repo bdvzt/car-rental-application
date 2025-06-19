@@ -52,6 +52,7 @@ public class BookingKafkaListener {
 
         kafkaSender.sendPayingEvent(new PaymentEvent(
                 booking.getId(),
+                null,
                 booking.getUserId(),
                 booking.getPrice()
         ));
@@ -91,6 +92,8 @@ public class BookingKafkaListener {
         if (booking.getStatus() != BookingStatus.RESERVED) return;
 
         booking.setStatus(BookingStatus.PAID);
+        booking.setPaymentId(event.getPaymentId());
+
         bookingRepository.save(booking);
         historyService.saveStatusChange(bookingId, BookingStatus.PAID);
     }

@@ -2,6 +2,7 @@ package com.example.paymentservice.kafka.listener;
 
 import com.example.paymentservice.entities.Payment;
 import com.example.paymentservice.entities.enums.PaymentStatus;
+import com.example.paymentservice.kafka.sender.KafkaSender;
 import com.example.paymentservice.repositories.PaymentRepository;
 import dtos.kafka.CarEvent;
 import dtos.kafka.PaymentEvent;
@@ -20,13 +21,15 @@ public class PayingKafkaListener {
 
     private final PaymentRepository paymentRepository;
 
+    private final KafkaSender kafkaSender;
+
     @KafkaListener(
             topics = "paying-event",
             containerFactory = "payListenerFactory"
     )
     public void handlePaymentEvent(PaymentEvent event) {
         Payment payment = Payment.of(
-                null,
+                UUID.randomUUID(),
                 event.getUserId(),
                 event.getBookingId(),
                 event.getPricePerDay(),
@@ -38,6 +41,13 @@ public class PayingKafkaListener {
         paymentRepository.save(payment);
         log.info("Создан новый платёж: bookingId={}, userId={}, статус={}",
                 event.getBookingId(), event.getUserId(), PaymentStatus.NEW);
+
+        kafkaSender.sendPaymentSuccessEvent(new PaymentEvent(
+                event.getBookingId(),
+                payment.getId(),
+                event.getUserId(),
+                event.getPricePerDay()
+        ));
     }
 
     @KafkaListener(

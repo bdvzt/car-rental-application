@@ -12,6 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class PaymentEvent {
     private UUID bookingId;
+    private UUID paymentId;
     private UUID userId;
     private BigDecimal pricePerDay;
 }
