@@ -1,5 +1,6 @@
 package com.example.notificationservice.kafka.listener;
 
+import com.example.notificationservice.service.EmailService;
 import dtos.kafka.BookingEvent;
 import dtos.kafka.PaymentEvent;
 import lombok.RequiredArgsConstructor;
@@ -11,14 +12,19 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class EventsListener {
+    private final EmailService emailService;
+
     @KafkaListener(
             topics = "booking-event",
             containerFactory = "bookingListenerFactory"
     )
     public void handleBookingCreatedEvent(BookingEvent event) {
         log.info("[Уведомление] Новое бронирование: {}", event.getBookingId());
-        // TODO: WebSocket уведомление пользователю
-        // TODO: Email уведомление
+        emailService.sendEmail(
+                "user@example.com",
+                "Новое бронирование",
+                "Ваше бронирование " + event.getBookingId() + " создано."
+        );
     }
 
     @KafkaListener(
@@ -27,7 +33,11 @@ public class EventsListener {
     )
     public void handleBookingCompletedEvent(BookingEvent event) {
         log.info("[Уведомление] Бронирование завершено: {}", event.getBookingId());
-        // TODO: WebSocket + Email
+        emailService.sendEmail(
+                "user@example.com",
+                "Бронирование завершено",
+                "Бронирование " + event.getBookingId() + " успешно завершено."
+        );
     }
 
     @KafkaListener(
@@ -36,7 +46,11 @@ public class EventsListener {
     )
     public void handlePaymentSuccessEvent(PaymentEvent event) {
         log.info("[Уведомление] Платёж успешно выполнен: {}", event.getBookingId());
-        // TODO: WebSocket + Email
+        emailService.sendEmail(
+                "user@example.com",
+                "Платёж подтверждён",
+                "Ваш платёж за бронирование " + event.getBookingId() + " прошёл успешно."
+        );
     }
 
     @KafkaListener(
@@ -45,7 +59,11 @@ public class EventsListener {
     )
     public void handlePaymentCancelledEvent(PaymentEvent event) {
         log.info("[Уведомление] Платёж отменён: {}", event.getBookingId());
-        // TODO: WebSocket + Email
+        emailService.sendEmail(
+                "user@example.com",
+                "Платёж отменён",
+                "Платёж за бронирование " + event.getBookingId() + " был отменён."
+        );
     }
 
     @KafkaListener(
@@ -54,6 +72,10 @@ public class EventsListener {
     )
     public void handleNewPaymentCreated(PaymentEvent event) {
         log.info("[Уведомление] Новый платёж ожидает оплаты: {}", event.getBookingId());
-        // TODO: WebSocket + Email (айди оплаты добавить)
+        emailService.sendEmail(
+                "user@example.com",
+                "Ожидается оплата",
+                "Для бронирования " + event.getBookingId() + " необходимо внести платёж."
+        );
     }
 }
