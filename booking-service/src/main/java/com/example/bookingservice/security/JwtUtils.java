@@ -100,6 +100,31 @@ public class JwtUtils {
         throw new RuntimeException("JWT token not found in request");
     }
 
+    public String getCurrentEmail() {
+        try {
+            String bearer = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                    .getRequest()
+                    .getHeader("Authorization");
+
+            if (bearer != null && bearer.startsWith("Bearer ")) {
+                String token = bearer.substring(7);
+
+                Claims claims = Jwts.parserBuilder()
+                        .setSigningKey(key())
+                        .build()
+                        .parseClaimsJws(token)
+                        .getBody();
+
+                String email = claims.get("email", String.class);
+                return email;
+            }
+        } catch (Exception e) {
+            logger.error("Ошибка при получении userId из токена: {}", e.getMessage(), e);
+        }
+
+        throw new RuntimeException("JWT token not found in request");
+    }
+
     private Key key() {
         String secret = jwtProperties.getSecret();
         logger.debug("Получен секрет для JWT: {}", secret == null ? "NULL" : "[PROTECTED]");
