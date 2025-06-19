@@ -13,11 +13,13 @@ import dtos.responses.CarDetailDTO;
 import dtos.responses.CarStatus;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookingService {
@@ -30,6 +32,7 @@ public class BookingService {
     @Transactional
     public UUID createBooking(BookingCreateRequest request) {
         UUID userId = jwtUtils.getCurrentUserId();
+        String email = jwtUtils.getCurrentEmail();
 
         boolean isBooked = bookingRepository.findAllByCarId(request.getCarId())
                 .stream()
@@ -53,12 +56,14 @@ public class BookingService {
         booking.setUserId(userId);
         booking.setCarId(request.getCarId());
         booking.setStatus(BookingStatus.PENDING);
+        booking.setEmail(email);
 
         booking = bookingRepository.save(booking);
 
         kafkaSender.sendBookingCreatedEvent(new BookingEvent(
                 booking.getId(),
-                booking.getCarId()
+                booking.getCarId(),
+                booking.getEmail()
         ));
 
         return booking.getId();
@@ -79,7 +84,8 @@ public class BookingService {
 
         kafkaSender.sendBookingCompletedEvent(new BookingEvent(
                 booking.getId(),
-                booking.getCarId()
+                booking.getCarId(),
+                booking.getEmail()
         ));
     }
 }

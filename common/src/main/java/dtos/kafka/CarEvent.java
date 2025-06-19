@@ -1,5 +1,6 @@
 package dtos.kafka;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,4 +17,5 @@ public class CarEvent {
     private BigDecimal pricePerDay;
     private boolean success;
     private String message;
+    private String email;
 }

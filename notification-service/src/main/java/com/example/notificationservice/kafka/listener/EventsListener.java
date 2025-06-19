@@ -18,7 +18,7 @@ public class EventsListener {
     @PostConstruct
     public void testMail() {
         try {
-            emailService.sendEmail("your@mail.ru", "Тест", "Это тестовое письмо");
+            emailService.sendEmail("budaevazay@mail.ru", "Тест", "Это тестовое письмо");
         } catch (Exception e) {
             log.error("Ошибка при тестовой отправке письма: {}", e.getMessage());
         }
@@ -31,7 +31,7 @@ public class EventsListener {
     public void handleBookingCreatedEvent(BookingEvent event) {
         log.info("[Уведомление] Новое бронирование: {}", event.getBookingId());
         emailService.sendEmail(
-                "budaevazay@mail.ru",
+                event.getEmail(),
                 "Новое бронирование",
                 "Ваше бронирование " + event.getBookingId() + " создано."
         );
@@ -44,7 +44,7 @@ public class EventsListener {
     public void handleBookingCompletedEvent(BookingEvent event) {
         log.info("[Уведомление] Бронирование завершено: {}", event.getBookingId());
         emailService.sendEmail(
-                "budaevazay@mail.ru",
+                event.getEmail(),
                 "Бронирование завершено",
                 "Бронирование " + event.getBookingId() + " успешно завершено."
         );
@@ -57,7 +57,7 @@ public class EventsListener {
     public void handlePaymentSuccessEvent(PaymentEvent event) {
         log.info("[Уведомление] Платёж успешно выполнен: {}", event.getBookingId());
         emailService.sendEmail(
-                "budaevazay@mail.ru",
+                event.getEmail(),
                 "Платёж подтверждён",
                 "Ваш платёж за бронирование " + event.getBookingId() + " прошёл успешно."
         );
@@ -70,7 +70,7 @@ public class EventsListener {
     public void handlePaymentCancelledEvent(PaymentEvent event) {
         log.info("[Уведомление] Платёж отменён: {}", event.getBookingId());
         emailService.sendEmail(
-                "budaevazay@mail.ru",
+                event.getEmail(),
                 "Платёж отменён",
                 "Платёж за бронирование " + event.getBookingId() + " был отменён."
         );
@@ -83,7 +83,7 @@ public class EventsListener {
     public void handleNewPaymentCreated(PaymentEvent event) {
         log.info("[Уведомление] Новый платёж ожидает оплаты: {}", event.getBookingId());
         emailService.sendEmail(
-                "budaevazay@mail.ru",
+                event.getEmail(),
                 "Ожидается оплата",
                 "Для бронирования " + event.getBookingId() + " необходимо внести платёж."
         );

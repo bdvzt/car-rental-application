@@ -4,6 +4,7 @@ import com.example.bookingservice.entities.Booking;
 import com.example.bookingservice.entities.enums.BookingStatus;
 import com.example.bookingservice.kafka.sender.KafkaSender;
 import com.example.bookingservice.repositories.BookingRepository;
+import com.example.bookingservice.security.JwtUtils;
 import dtos.kafka.BookingEvent;
 import dtos.kafka.PaymentEvent;
 import jakarta.transaction.Transactional;
@@ -21,6 +22,7 @@ public class CancelBookingService {
     private final BookingRepository bookingRepository;
     private final BookingHistoryService historyService;
     private final KafkaSender kafkaSender;
+    private final JwtUtils jwtUtils;
 
     @Scheduled(fixedDelay = 60_000)
     @Transactional
@@ -37,14 +39,16 @@ public class CancelBookingService {
 
             kafkaSender.sendBookingCompletedEvent(new BookingEvent(
                     booking.getId(),
-                    booking.getCarId()
+                    booking.getCarId(),
+                    booking.getEmail()
             ));
 
             kafkaSender.sendCancelPayingEvent(new PaymentEvent(
                     booking.getId(),
                     booking.getPaymentId(),
                     booking.getUserId(),
-                    booking.getPrice()
+                    booking.getPrice(),
+                    booking.getEmail()
             ));
         }
     }

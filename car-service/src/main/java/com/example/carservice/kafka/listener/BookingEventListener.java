@@ -1,6 +1,7 @@
 package com.example.carservice.kafka.listener;
 
 import com.example.carservice.entities.Car;
+import com.example.carservice.security.JwtUtils;
 import dtos.responses.CarStatus;
 import com.example.carservice.kafka.sender.KafkaCarSender;
 import com.example.carservice.repositories.CarRepository;
@@ -19,7 +20,6 @@ public class BookingEventListener {
 
     private final CarRepository carRepository;
     private final KafkaCarSender kafkaCarSender;
-
     @KafkaListener(
             topics = "booking-event",
             containerFactory = "bookingListenerFactory"
@@ -27,6 +27,7 @@ public class BookingEventListener {
     public void handleBookingCreated(BookingEvent event) {
         UUID carId = event.getCarId();
         UUID bookingId = event.getBookingId();
+        String email = event.getEmail();
 
         Optional<Car> optionalCar = carRepository.findById(carId);
 
@@ -36,7 +37,8 @@ public class BookingEventListener {
                     carId,
                     null,
                     false,
-                    "Машина не найдена"
+                    "Машина не найдена",
+                    email
             ));
             return;
         }
@@ -49,7 +51,8 @@ public class BookingEventListener {
                     carId,
                     car.getPricePerDay(),
                     false,
-                    "Машина уже забронирована"
+                    "Машина уже забронирована",
+                    email
             ));
             return;
         } else if (car.getStatus() == CarStatus.UNDER_REPAIR) {
@@ -58,7 +61,8 @@ public class BookingEventListener {
                     carId,
                     null,
                     false,
-                    "Машина в ремонте"
+                    "Машина в ремонте",
+                    email
             ));
             return;
         }
@@ -71,7 +75,8 @@ public class BookingEventListener {
                     carId,
                     car.getPricePerDay(),
                     true,
-                    "Машина успешно забронирована"
+                    "Машина успешно забронирована",
+                    email
             ));
 
         } catch (Exception e) {
@@ -80,7 +85,8 @@ public class BookingEventListener {
                     carId,
                     null,
                     false,
-                    "Ошибка при сохранении машины"
+                    "Ошибка при сохранении машины",
+                    email
             ));
         }
     }
@@ -94,6 +100,7 @@ public class BookingEventListener {
     public void handleBookingCompleted(BookingEvent event) {
         UUID carId = event.getCarId();
         UUID bookingId = event.getBookingId();
+        String email = event.getEmail();
 
         Optional<Car> optionalCar = carRepository.findById(carId);
 
@@ -103,7 +110,8 @@ public class BookingEventListener {
                     carId,
                     null,
                     false,
-                    "Машина не найдена при завершении аренды"
+                    "Машина не найдена при завершении аренды",
+                    email
             ));
             return;
         }
@@ -116,7 +124,8 @@ public class BookingEventListener {
                     carId,
                     null,
                     false,
-                    "Машина не находится в статусе BOOKED"
+                    "Машина не находится в статусе BOOKED",
+                    email
             ));
             return;
         }
@@ -130,7 +139,8 @@ public class BookingEventListener {
                     carId,
                     car.getPricePerDay(),
                     true,
-                    "Аренда завершена, машина освобождена"
+                    "Аренда завершена, машина освобождена",
+                    email
             ));
 
         } catch (Exception e) {
@@ -139,7 +149,8 @@ public class BookingEventListener {
                     carId,
                     null,
                     false,
-                    "Ошибка при завершении аренды"
+                    "Ошибка при завершении аренды",
+                    email
             ));
         }
     }

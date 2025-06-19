@@ -15,4 +15,6 @@ public class PaymentEvent {
     private UUID paymentId;
     private UUID userId;
     private BigDecimal pricePerDay;
+
+    private String email;
 }

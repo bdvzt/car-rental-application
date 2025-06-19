@@ -102,12 +102,18 @@ public class JwtUtils {
 
     public String getCurrentEmail() {
         try {
-            String bearer = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                    .getRequest()
-                    .getHeader("Authorization");
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            if (attributes == null) {
+                logger.warn("RequestAttributes is null — вызывается вне контекста HTTP-запроса?");
+                throw new IllegalStateException("Request context is not available");
+            }
+
+            String bearer = attributes.getRequest().getHeader("Authorization");
+            logger.debug("Заголовок Authorization: {}", bearer);
 
             if (bearer != null && bearer.startsWith("Bearer ")) {
                 String token = bearer.substring(7);
+                logger.debug("JWT токен: {}", token);
 
                 Claims claims = Jwts.parserBuilder()
                         .setSigningKey(key())
@@ -116,13 +122,16 @@ public class JwtUtils {
                         .getBody();
 
                 String email = claims.get("email", String.class);
+                logger.info("Извлечён email из токена: {}", email);
                 return email;
+            } else {
+                logger.warn("Authorization-заголовок отсутствует или имеет неверный формат");
             }
         } catch (Exception e) {
-            logger.error("Ошибка при получении userId из токена: {}", e.getMessage(), e);
+            logger.error("Ошибка при получении email из токена: {}", e.getMessage(), e);
         }
 
-        throw new RuntimeException("JWT token not found in request");
+        throw new RuntimeException("JWT token not found or invalid in request");
     }
 
     private Key key() {

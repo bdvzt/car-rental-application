@@ -28,6 +28,9 @@ public class Booking {
     @Column(name = "car_id", nullable = false)
     private UUID carId;
 
+    @Column(name = "email", nullable = false)
+    private String email;
+
     @Column(name = "payment_id", nullable = false)
     private UUID paymentId;
 

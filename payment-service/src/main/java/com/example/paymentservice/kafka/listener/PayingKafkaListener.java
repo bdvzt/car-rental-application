@@ -4,10 +4,12 @@ import com.example.paymentservice.entities.Payment;
 import com.example.paymentservice.entities.enums.PaymentStatus;
 import com.example.paymentservice.kafka.sender.KafkaSender;
 import com.example.paymentservice.repositories.PaymentRepository;
+import com.example.paymentservice.security.JwtUtils;
 import dtos.kafka.CarEvent;
 import dtos.kafka.PaymentEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.Jar;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -46,7 +48,8 @@ public class PayingKafkaListener {
                 event.getBookingId(),
                 payment.getId(),
                 event.getUserId(),
-                event.getPricePerDay()
+                event.getPricePerDay(),
+                event.getEmail()
         ));
     }
 

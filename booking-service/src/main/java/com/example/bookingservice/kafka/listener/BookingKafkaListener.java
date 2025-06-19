@@ -4,6 +4,7 @@ import com.example.bookingservice.entities.Booking;
 import com.example.bookingservice.entities.enums.BookingStatus;
 import com.example.bookingservice.kafka.sender.KafkaSender;
 import com.example.bookingservice.repositories.BookingRepository;
+import com.example.bookingservice.security.JwtUtils;
 import com.example.bookingservice.services.BookingHistoryService;
 import dtos.kafka.CarEvent;
 import dtos.kafka.PaymentEvent;
@@ -22,6 +23,7 @@ public class BookingKafkaListener {
     private final BookingHistoryService historyService;
 
     private final KafkaSender kafkaSender;
+    private final JwtUtils jwtUtils;
 
     @KafkaListener(
             topics = "car-reserved-event",
@@ -54,7 +56,8 @@ public class BookingKafkaListener {
                 booking.getId(),
                 null,
                 booking.getUserId(),
-                booking.getPrice()
+                booking.getPrice(),
+                booking.getEmail()
         ));
     }
 

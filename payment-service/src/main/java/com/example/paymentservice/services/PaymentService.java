@@ -34,6 +34,7 @@ public class PaymentService {
     @Transactional
     public void pay(PaymentRequest request) {
         UUID currentUserId = jwtUtils.getCurrentUserId();
+        String email = jwtUtils.getCurrentEmail();
 
         Payment payment = paymentRepository.findById(request.getPaymentId())
                 .orElseThrow(() -> new NoSuchElementException("Платёж с ID " + request.getPaymentId() + " не найден"));
@@ -57,7 +58,8 @@ public class PaymentService {
                 payment.getBookingId(),
                 payment.getId(),
                 payment.getUserId(),
-                payment.getPrice()
+                payment.getPrice(),
+                email
         ));
     }
 
