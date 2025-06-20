@@ -24,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -58,7 +59,6 @@ public class AuthUserService {
         return new TokenResponse(accessToken, refreshToken.getToken());
     }
 
-    // TODO: позволить админу зарегаться как юзеру
     public ResponseDTO register(RegisterUserRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Такой email уже существует");
@@ -80,5 +80,9 @@ public class AuthUserService {
                 HttpStatus.CREATED.value(),
                 "Пользователь успешно зарегистрирован"
         );
+    }
+
+    public void logout(UUID userId) {
+        refreshTokenService.deleteByUserId(userId);
     }
 }

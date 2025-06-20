@@ -5,6 +5,7 @@ import com.example.userservice.dtos.requests.RegisterUserRequest;
 import com.example.userservice.dtos.requests.TokenRefreshRequest;
 import com.example.userservice.dtos.responses.TokenRefreshResponse;
 import com.example.userservice.dtos.responses.TokenResponse;
+import com.example.userservice.security.services.UserDetailsImpl;
 import com.example.userservice.services.AuthUserService;
 import com.example.userservice.services.RefreshTokenService;
 import dtos.responses.ResponseDTO;
@@ -13,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 @Tag(name = "авторизация и регистрация пользователей", description = "+рефреш токенов")
 public class AuthUserController {
 
